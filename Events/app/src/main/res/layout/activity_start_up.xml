@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center"
+    android:background="@color/colorPrimaryDark"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context="ra.olympus.zeus.events.StartUpActivity">
+
+
+    <Button
+        android:id="@+id/sign_in_button"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/button_background"
+        android:elevation="6dp"
+        android:text="Sign In"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/sign_up_button"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/button_background"
+        android:elevation="6dp"
+        android:text="Sign Up"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+</LinearLayout>
