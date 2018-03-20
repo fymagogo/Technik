@@ -48,4 +48,33 @@ router.post('/signup',function(req, res, next){
       });
   });
 
+  // HANDLER FOR USER EVENT CATEGORY SUSCRIPTIONS
+  router.post('/usercategorysuscription',function(req,res){
+    Usercategory_info = req.body;
+    
+    req.getConnection(function(err, connection) {
+      if (err) {
+        console.error("Error " + err);
+        return next(err);
+      } else {
+        console.log("CONNECTED");
+        var subscribetoCategory = "INSERT INTO usersubscriptions VALUES (?,?)";
+        var query = connection.query(subscribetoCategory, [Usercategory_info.UserName,Usercategory_info.CategoryId], 
+          function(err,results,fields) {
+  
+          if (err) {
+            console.error("Sql error " + err);
+            res.writeHead(400, "Bad request", {
+              "content-type": "application/json"
+            });
+            res.end();
+          }
+  
+          res.writeHead(200,{"content-type":"application/json"});
+          res.end();
+          console.log("category subscription successful");
+        });
+      }
+    });
+  });
 module.exports = router

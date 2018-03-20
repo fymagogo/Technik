@@ -16,7 +16,7 @@ router.post('/createEvent',function(req,res){
         else {
           console.log("CONNECTED")
      
-        var CreateEvent = "INSERT INTO Event (EventName,CategoryId,MainImage,EventDate,LocationId,UserName,Description) values (?,?,?,?,?,?,?) ";
+        var CreateEvent = "INSERT INTO Event (EventName,CategoryId,MainImage,EventDate,UserName,Description) values (?,?,?,?,?,?,?) ";
          // inserting the event details into the table.
      
          var EventName =  EventDetails.EventName;
@@ -26,11 +26,11 @@ router.post('/createEvent',function(req,res){
           var LocationId = EventDetails.LocationId;
           var UserName = EventDetails.Username;
           var Description = EventDetails.Description;
-          var locationName = EventDetails.LocationName;
+          //var locationName = EventDetails.LocationName;
           var latitude = EventDetails.Latitude;
           var longitude = EventDetails.Longitude;
         
-        var query = connection.query( CreateEvent,[EventName,CategoryId,MainImage,EventDate,LocationId,UserName,Description] , function(err, results){
+        var query = connection.query( CreateEvent,[EventName,CategoryId,MainImage,EventDate,UserName,Description] , function(err, results){
            if(err){
             console.error("Sql error " + err);
             res.writeHead(500,"Internal server error",{"content-type":"application/json"});

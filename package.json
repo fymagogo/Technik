@@ -25,6 +25,7 @@
     "nodemailer": "^4.6.0",
     "passport": "latest",
     "passport-local": "latest",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "query-string": "^6.0.0"
   }
 }
