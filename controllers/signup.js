@@ -33,16 +33,28 @@ router.post('/signup',function(req, res, next){
 // Using bcrypt to hash the password.
  bcrypt.hash(Password, saltRounds, function(err, hash) {
      //query the database to insert into it. 
-   var query = connection.query( InsertUserInfo,[FirstName,LastName,PhoneNumber,Email,UserName,hash] , function(err, results){
-      if(err){
+   var query = connection.query( InsertUserInfo,[FirstName,LastName,PhoneNumber,Email,UserName,hash] , function(err, results){   
+    if(err){
        console.error("Sql error " + err);
        res.writeHead(500,"Internal error",{"content-type":"application/json"});
        res.end();
        }
-         res.writeHead(200,{"content-type":"application/json"});
-         res.end();
-        console.log("user registered successfully");
-             })
+       // send out the user's username and maybe id and email or so to the front end
+     var outputquery = "SELECT Firstname,Lastname,username,Email FROM users ORDER BY TimeAdded DESC LIMIT 1";
+       connection.query(outputquery,[],function(err,results){
+         if(err){
+          console.error("Sql error " + err);
+          res.writeHead(404, "Error not found", {
+            "content-type": "application/json"
+          });
+          res.end();
+
+         }
+         return res.json(results);
+         console.log("user registered successfully");
+       });
+        
+             });
           });
         }
       });

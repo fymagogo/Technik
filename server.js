@@ -26,7 +26,6 @@ app.use(myConnection(mysql, dbOptions, 'single'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-
 app.use(morgan('dev'));  //to log every request to the terminal
 
   // // // // // // // // // // // //
@@ -39,6 +38,9 @@ app.use(require('./controllers/loginHandler')); //login endpoint
 app.use(require('./controllers/Search')); // endpoint to handle search queries
 app.use(require('./controllers/createEvent')); // endpoint to handle creation of events.
 app.use(require('./controllers/myEvents')); // endpoint for the user's events.
+app.use(require('./controllers/interested')); // endpoint for the events related to the user
+app.use(require('./controllers/settings')); // endpoint for the app settings
+
 app.listen(8000, function(){
 	console.log("server is running on port 8000");
 });
