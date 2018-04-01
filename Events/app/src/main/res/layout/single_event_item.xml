@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:drawablePadding="20dp"
             android:gravity="center_vertical"
-            android:text="First Council of Nicea"
+            android:text="GESA WEEK"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorAccent"
             android:textStyle="bold" />
