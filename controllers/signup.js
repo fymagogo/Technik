@@ -14,7 +14,7 @@ router.get('/signup',function(req,res){
         return next(err);
       }
       else {
-        console.log("CONNECTED");;
+        console.log("CONNECTED");
         connection.query('SELECT username from users',[],function(err,results){
           if(err){
             console.error("Sql error " + err);

@@ -19,25 +19,27 @@ router.post('/login', function(req,res){
          console.error("Sql error " + err);
          }
 
-         if(results.length === 0){
-            console.log("no user exists like that");
-            res.writeHead(404,"Resource not found",{"content-type":"application/json"});
-            res.send(JSON.stringify({data: "Resource not found"}));
+         if(results.length > 0){
+            if(results){
 
+              const hash = results[0].password.toString();
+              console.log(hash);
+              bcrypt.compare(UserDetails.Password, hash ,function(err,response){
+                console.log(response);
+                if(response === true){
+                  res.writeHead(200,{"content-type":"application/json"});
+                  res.end();
+                }else{
+                 res.writeHead(404,"wrong credentials",{"content-type":"application/json"});
+                 res.send(JSON.stringify({data: "Resource not found"}));
+                }
+              });
+            }
          } else {
-               const hash = results[0].password.toString();
-               console.log(hash);
-               bcrypt.compare(UserDetails.Password, hash ,function(err,response){
-                 console.log(response);
-                 if(response === true){
-                   res.writeHead(200,{"content-type":"application/json"});
-                   res.end();
-                 }else{
-                  res.writeHead(404,"wrong credentials",{"content-type":"application/json"});
-                  res.send(JSON.stringify({data: "Resource not found"}));
-                 }
-               });
-        } 
+          console.log("no user exists like that");
+          res.writeHead(404,"Resource not found",{"content-type":"application/json"});
+          res.send(JSON.stringify({data: "Resource not found"}));
+         }
       });
     }
   }); 
