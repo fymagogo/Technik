@@ -45,24 +45,34 @@ router.delete('/myEvents/:UserName/:EventId/delete', function(req,res,next){
             return next(err);
          }else{
             console.log("connected");
-            connection.query('DELETE FROM event WHERE UserName = ? AND EventId = ?',[req.params.UserName,req.params.EventId],function(err,results){
+            connection.query('SET FOREIGN_KEY_CHECKS=0',[],function(err,results){
+
+            connection.query('DELETE FROM location where LocationId = (SELECT locationId from event WHERE eventId = ?)',[req.params.EventId],function(err,results){
                 if(err){
                     console.error("Sql error " + err);
-                    res.writeHead(500,"This Username has no event with this Id",{"content-type":"application/json"});
+                    res.writeHead(404,"Resource not found",{"content-type":"application/json"});
                     res.end();
             
                    }
                  else{
+                    connection.query('DELETE FROM event where eventId = ? AND Username = ?',[req.params.EventId,req.params.UserName],function(err,results){
+                        if(err){
+                            console.error("Sql error " + err);
+                            res.writeHead(404,"Resource not found",{"content-type":"application/json"});
+                            res.end();
+                    
+                           }else{
                      console.log("event has successfully been deleted");
                      res.writeHead(200,"event successfully deleted",{"content-type":"application/json"});
                      res.end();
                  }
-
-            });
-         }
-    })
+              });
+            }
+        })
+      }) 
+     } 
+  });
 });
-
 // Edit an event. 
 router.put('/myEvents/:UserName/:EventId/edit',function(req,res,next){
     //connecting to database.
@@ -82,7 +92,7 @@ router.put('/myEvents/:UserName/:EventId/edit',function(req,res,next){
             res.writeHead(500,"Internal error",{"content-type":"application/json"});
             res.end();
             }
-            connection.query('UPDATE Location Set LocationName = ?,Latitude = ?,longitude = ? WHERE LocationId = ?',[req.body.LocationName,req.body.latitude,req.body.longitude,req.body.locationId ], function(err,results){
+            connection.query('UPDATE Location Set LocationName = ?,Latitude = ?,longitude = ? WHERE LocationId = ?',[req.body.LocationName,req.body.Latitude,req.body.Longitude,req.body.LocationId ], function(err,results){
                 if(err){
                     console.error("Sql error " + err);
                     res.writeHead(500,"Internal error",{"content-type":"application/json"});

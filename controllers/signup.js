@@ -5,13 +5,34 @@ var express = require('express');
 var router = express.Router();
 const bcrypt = require("bcrypt");
 
+// send the usernames to the front end to check if its taken
+router.get('/signup',function(req,res){
+  req.connection(function(err,connection){
+    if(err){
+      if (err) {
+        console.error("Error " + err);
+        return next(err);
+      }
+      else {
+        console.log("CONNECTED");;
+        connection.query('SELECT username from users',[],function(err,results){
+          if(err){
+            console.error("Sql error " + err);
+            res.writeHead(500,"Internal error",{"content-type":"application/json"});
+            res.end();
+            }
+            return res.json(results);
+        })
+      }
+    }
+  })
+});
 router.post('/signup',function(req, res, next){
    // UserDetails holds the users sign-in data
    var UserDetails = req.body;
    const saltRounds = 10;
    console.log(UserDetails);
-
-//Establishing connection to EventHub database
+  //Establishing connection to EventHub database
  req.getConnection(function(err, connection) {
    if (err) {
      console.error("Error " + err);

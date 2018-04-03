@@ -16,36 +16,36 @@ router.post('/createEvent',function(req,res){
         else {
           console.log("CONNECTED")
      
-        var CreateEvent = "INSERT INTO Event (EventName,CategoryId,MainImage,EventDate,UserName,Description) values (?,?,?,?,?,?,?) ";
+        var CreateEvent = "INSERT INTO Event (EventName,CategoryId,MainImage,EventDate,locationId,UserName,Description) values (?,?,?,?,(SELECT LAST_INSERT_ID()),?,?) ";
          // inserting the event details into the table.
      
          var EventName =  EventDetails.EventName;
          var CategoryId = EventDetails.CategoryId;
           var MainImage = EventDetails.MainImage;
           var EventDate= EventDetails.EventDate;
-          var LocationId = EventDetails.LocationId;
           var UserName = EventDetails.Username;
           var Description = EventDetails.Description;
-          //var locationName = EventDetails.LocationName;
+          var locationName = EventDetails.LocationName;
           var latitude = EventDetails.Latitude;
           var longitude = EventDetails.Longitude;
         
-        var query = connection.query( CreateEvent,[EventName,CategoryId,MainImage,EventDate,UserName,Description] , function(err, results){
+        var query = connection.query( "INSERT INTO location (Longitude,Latitude,LocationName) VALUES (?,?,?)",[longitude,latitude,locationName] , function(err, results){
            if(err){
             console.error("Sql error " + err);
             res.writeHead(500,"Internal server error",{"content-type":"application/json"});
             res.end();
             } 
-              connection.query("INSERT INTO location (latitude,longitude,locationName) VALUES ('?','?','?')",[latitude,longitude,locationName],function(err,results){
+              connection.query(CreateEvent,[EventName,CategoryId,MainImage,EventDate,UserName,Description],function(err,results){
                 if(err){
                     console.error("Sql error " + err);
                     res.writeHead(500,"Internal server error",{"content-type":"application/json"});
                     res.end();
-                    } });
+                    } 
+                  });
 
               res.writeHead(200,"event successfully created",{"content-type":"application/json"});
               res.end();
-             console.log("event successfully created");
+             console.log("event successfully created"); 
                   });
                
              }  

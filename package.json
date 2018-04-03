@@ -21,6 +21,7 @@
     "express-mysql-session": "^1.2.3",
     "express-session": "~1.14.1",
     "express-validator": "^4.3.0",
+    "flow": "^0.2.3",
     "mysql": "^2.15.0",
     "nodemailer": "^4.6.0",
     "passport": "latest",
