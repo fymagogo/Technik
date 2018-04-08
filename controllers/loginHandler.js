@@ -30,7 +30,7 @@ router.post('/login', function(req,res){
                   res.writeHead(200,{"content-type":"application/json"});
                   res.end();
                 }else{
-                 res.writeHead(404,"wrong credentials",{"content-type":"application/json"});
+                 res.writeHead(403,"wrong credentials",{"content-type":"application/json"});
                  res.send(JSON.stringify({data: "Resource not found"}));
                 }
               });

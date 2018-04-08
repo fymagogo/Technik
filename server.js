@@ -39,7 +39,8 @@ app.use(require('./controllers/Search')); // endpoint to handle search queries
 app.use(require('./controllers/createEvent')); // endpoint to handle creation of events.
 app.use(require('./controllers/myEvents')); // endpoint for the user's events.
 app.use(require('./controllers/interested')); // endpoint for the events related to the user
-app.use(require('./controllers/settings')); // endpoint for the app settings                                     
+app.use(require('./controllers/settings')); // endpoint for the app settings    
+app.use(require('./controllers/notification')); // endpoint for the app notifications                               
 
 app.listen(8000, function(){
 	console.log("server is running on port 8000");

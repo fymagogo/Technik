@@ -7,8 +7,7 @@ const bcrypt = require("bcrypt");
 
 // send the usernames to the front end to check if its taken
 router.get('/signup',function(req,res){
-  req.connection(function(err,connection){
-    if(err){
+  req.getConnection(function(err,connection){
       if (err) {
         console.error("Error " + err);
         return next(err);
@@ -24,7 +23,6 @@ router.get('/signup',function(req,res){
             return res.json(results);
         })
       }
-    }
   })
 });
 router.post('/signup',function(req, res, next){
