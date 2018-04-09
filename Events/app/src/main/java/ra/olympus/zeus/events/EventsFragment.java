@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import android.widget.Spinner;
 
 public class EventsFragment extends Fragment {
 
+    private String mQuery;
+    private final String mBaseQuery = "";
     public EventsFragment() {
         // Required empty public constructor
     }
@@ -56,9 +60,21 @@ public class EventsFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
+                switch (position){
+                    case 0:
+                        mQuery = mBaseQuery.concat("my_events");
+                        break;
+                    case 1:
+                        mQuery = mBaseQuery.concat("my_events");
+                        break;
+                    case 2:
+                        mQuery = mBaseQuery.concat("my_events");
+                        break;
+                    case 3:
+                        mQuery = mBaseQuery.concat("my_events");
+                        break;
+                }
+                }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
