@@ -6,6 +6,11 @@
     android:orientation="vertical"
     tools:context="ra.olympus.zeus.events.EventsFragment">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/event_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:gravity="center_vertical"
         android:background="@color/colorPrimary"
@@ -30,11 +35,10 @@
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/container"
-        android:layout_margin="8dp"
-        >
+        android:layout_margin="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/background"/>
+                android:src="@drawable/background" />
 
             <TextView
                 android:id="@+id/name_of_event_text_view"

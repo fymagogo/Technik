@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ public class EventsFragment extends Fragment {
 
     private String mQuery;
     private final String mBaseQuery = "";
+
     public EventsFragment() {
         // Required empty public constructor
     }
@@ -44,8 +47,15 @@ public class EventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_events, container, false);
+        View view = inflater.inflate(R.layout.fragment_events, container, false);
         CardView layout = view.findViewById(R.id.container);
+
+        RecyclerView eventRecyclerView = view.findViewById(R.id.event_recycler);
+        eventRecyclerView.setHasFixedSize(true);
+        eventRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
+        EventAdapter adapter1 = new EventAdapter(DummyData.getData());
+        eventRecyclerView.setAdapter(adapter1);
+
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,13 +64,13 @@ public class EventsFragment extends Fragment {
             }
         });
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.event_menu,android.R.layout.simple_expandable_list_item_1);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.event_menu, android.R.layout.simple_expandable_list_item_1);
         Spinner spinner = view.findViewById(R.id.events_menu_spinner);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position){
+                switch (position) {
                     case 0:
                         mQuery = mBaseQuery.concat("my_events");
                         break;
@@ -74,7 +84,8 @@ public class EventsFragment extends Fragment {
                         mQuery = mBaseQuery.concat("my_events");
                         break;
                 }
-                }
+            }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -83,5 +94,6 @@ public class EventsFragment extends Fragment {
         spinner.setAdapter(adapter);
         return view;
     }
+
 
 }
