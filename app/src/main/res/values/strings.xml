@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Events</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_create_event">Create Event</string>
+
+    <string-array name="category_types">
+        <item>Religion</item>
+        <item>Entertainment</item>
+        <item>Education</item>
+        <item>Sports</item>
+        <item>Lifestyle</item>
+        <item>Others</item>
+    </string-array>
+
+    <string-array name="event_menu">
+        <item>All Events</item>
+        <item>My Events</item>
+        <item>Interested</item>
+        <item>Going</item>
+        <item>Subscription</item>
+    </string-array>
+</resources>
