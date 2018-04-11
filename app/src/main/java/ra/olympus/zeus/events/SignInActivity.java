@@ -1,6 +1,8 @@
 package ra.olympus.zeus.events;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.preference.PreferenceActivity;
 import android.provider.Settings;
@@ -27,14 +29,21 @@ import retrofit2.http.Header;
 
 public class SignInActivity extends AppCompatActivity {
 
-    // String responseUsername;
+
+
+
+    private Sessions session;
     ScrollView SignInLayout;
     AnimationDrawable animationDrawable;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        session = new Sessions();
 
         TextView dontHaveAnAccountTextView = this.findViewById(R.id.dont_have_an_account_text_view);
         dontHaveAnAccountTextView.setOnClickListener(new View.OnClickListener() {
@@ -44,9 +53,9 @@ public class SignInActivity extends AppCompatActivity {
                 startActivity(signUpIntent);
             }
         });
-
         final EditText Username = (EditText) findViewById(R.id.Username_of_user_edit_text_sign_in);
         final EditText Password = (EditText) findViewById(R.id.password_of_user_edit_text);
+
 
         Button signInButton = this.findViewById(R.id.sign_in_button);
         signInButton.setOnClickListener(new View.OnClickListener() {
@@ -95,10 +104,15 @@ public class SignInActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()){
 
+                    session.setUsername(user.getUsername());
+                    session.setPassword(user.getPassword());
+
                     Intent MainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
                     MainActivityIntent.putExtra("Username",user.getUsername());
                     startActivity(MainActivityIntent);
                     finish();
+
+
                 }
 
                 else {
