@@ -31,8 +31,8 @@ public class SignInActivity extends AppCompatActivity {
 
 
 
-
-    private Sessions session;
+    EditText Username;
+    EditText Password;
     ScrollView SignInLayout;
     AnimationDrawable animationDrawable;
 
@@ -43,7 +43,9 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        session = new Sessions();
+
+         Username = (EditText) findViewById(R.id.Username_of_user_edit_text_sign_in);
+         Password = (EditText) findViewById(R.id.password_of_user_edit_text);
 
         TextView dontHaveAnAccountTextView = this.findViewById(R.id.dont_have_an_account_text_view);
         dontHaveAnAccountTextView.setOnClickListener(new View.OnClickListener() {
@@ -51,10 +53,11 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signUpIntent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivity(signUpIntent);
+                finish();
             }
         });
-        final EditText Username = (EditText) findViewById(R.id.Username_of_user_edit_text_sign_in);
-        final EditText Password = (EditText) findViewById(R.id.password_of_user_edit_text);
+
+
 
 
         Button signInButton = this.findViewById(R.id.sign_in_button);
@@ -85,16 +88,8 @@ public class SignInActivity extends AppCompatActivity {
 
     private void SendSignInRequest(final UserSignIn user) {
 
-        OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        okHttpClientBuilder.addInterceptor(logging);
-        EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8000/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClientBuilder.build());
+        EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
 
 
         Call<ResponseBody> call = client.sendSignInDetails(user);
@@ -104,8 +99,13 @@ public class SignInActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()){
 
-                    session.setUsername(user.getUsername());
-                    session.setPassword(user.getPassword());
+                    SharedPreferences sharedPref;
+
+                    sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
+
+                    sharedPref.edit().putString("Username",user.getUsername());
+                    sharedPref.edit().putString("Password", user.getPassword());
+
 
                     Intent MainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
                     MainActivityIntent.putExtra("Username",user.getUsername());
@@ -140,6 +140,8 @@ public class SignInActivity extends AppCompatActivity {
 
 
     }
+
+
 
 
 }

@@ -1,6 +1,8 @@
 package ra.olympus.zeus.events;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
 
     private String[] mPageTitles = {
             "Events",
@@ -35,117 +38,135 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+      SharedPreferences sharedPref;
+      sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN",Context.MODE_PRIVATE);
+
+      if (!(sharedPref.contains("Username") && sharedPref.contains("Password"))){
+
+          Intent StartUpIntent = new Intent(getApplicationContext(),StartUpActivity.class);
+          startActivity(StartUpIntent);
+          finish();
+
+      }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Toolbar toolbar = this.findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(mPageTitles[0]);
-        }
 
-        final FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent createEventIntent = new Intent(MainActivity.this, CreateEventActivity.class);
-                startActivity(createEventIntent);
+            final Toolbar toolbar = this.findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(mPageTitles[0]);
             }
-        });
 
-       tabLayout = this.findViewById(R.id.tabs);
+            final FloatingActionButton fab = findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent createEventIntent = new Intent(MainActivity.this, CreateEventActivity.class);
+                    startActivity(createEventIntent);
+                }
+            });
 
-        ViewPager viewPager = this.findViewById(R.id.view_pager);
+            tabLayout = this.findViewById(R.id.tabs);
 
-        tabLayout.setupWithViewPager(viewPager);
+            ViewPager viewPager = this.findViewById(R.id.view_pager);
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (getSupportActionBar() != null) {
-                    toolbar.setTitle(mPageTitles[tab.getPosition()]);
+            tabLayout.setupWithViewPager(viewPager);
+
+            tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    if (getSupportActionBar() != null) {
+                        toolbar.setTitle(mPageTitles[tab.getPosition()]);
+                    }
+
+                    switch (tab.getPosition()) {
+                        case 0:
+                            toolbar.setTitle(mPageTitles[tab.getPosition()]);
+                            tabLayout.getTabAt(0).setIcon(mTabIcons[0]);
+                            tabLayout.getTabAt(1).setIcon(mTabIcons[1]);
+                            tabLayout.getTabAt(2).setIcon(mTabIcons[2]);
+                            tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
+                            fab.setVisibility(View.VISIBLE);
+                            break;
+                        case 1:
+                            toolbar.setTitle(mPageTitles[tab.getPosition()]);
+                            tabLayout.getTabAt(0).setIcon(mTabIcons[0]);
+                            tabLayout.getTabAt(1).setIcon(mTabIcons[1]);
+                            tabLayout.getTabAt(2).setIcon(mTabIcons[2]);
+                            tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
+                            fab.setVisibility(View.VISIBLE);
+                            break;
+                        case 2:
+                            toolbar.setTitle(mPageTitles[tab.getPosition()]);
+                            tabLayout.getTabAt(0).setIcon(mTabIcons[0]);
+                            tabLayout.getTabAt(1).setIcon(mTabIcons[1]);
+                            tabLayout.getTabAt(2).setIcon(mTabIcons[2]);
+                            tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
+                            fab.setVisibility(View.GONE);
+                            break;
+                        case 3:
+                            toolbar.setTitle(mPageTitles[tab.getPosition()]);
+                            fab.setVisibility(View.GONE);
+                            tabLayout.getTabAt(0).setIcon(mTabIcons[0]);
+                            tabLayout.getTabAt(1).setIcon(mTabIcons[1]);
+                            tabLayout.getTabAt(2).setIcon(mTabIcons[2]);
+                            tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
+                            break;
+                    }
                 }
 
-                switch (tab.getPosition()) {
-                    case 0:
-                        toolbar.setTitle(mPageTitles[tab.getPosition()]);
-                        tabLayout.getTabAt(0).setIcon(mTabIcons[0]);
-                        tabLayout.getTabAt(1).setIcon(mTabIcons[1]);
-                        tabLayout.getTabAt(2).setIcon(mTabIcons[2]);
-                        tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
-                        fab.setVisibility(View.VISIBLE);
-                        break;
-                    case 1:
-                        toolbar.setTitle(mPageTitles[tab.getPosition()]);
-                        tabLayout.getTabAt(0).setIcon(mTabIcons[0]);
-                        tabLayout.getTabAt(1).setIcon(mTabIcons[1]);
-                        tabLayout.getTabAt(2).setIcon(mTabIcons[2]);
-                        tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
-                        fab.setVisibility(View.VISIBLE);
-                        break;
-                    case 2:
-                        toolbar.setTitle(mPageTitles[tab.getPosition()]);
-                        tabLayout.getTabAt(0).setIcon(mTabIcons[0]);
-                        tabLayout.getTabAt(1).setIcon(mTabIcons[1]);
-                        tabLayout.getTabAt(2).setIcon(mTabIcons[2]);
-                        tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
-                        fab.setVisibility(View.GONE);
-                        break;
-                    case 3:
-                        toolbar.setTitle(mPageTitles[tab.getPosition()]);
-                        fab.setVisibility(View.GONE);
-                        tabLayout.getTabAt(0).setIcon(mTabIcons[0]);
-                        tabLayout.getTabAt(1).setIcon(mTabIcons[1]);
-                        tabLayout.getTabAt(2).setIcon(mTabIcons[2]);
-                        tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
-                        break;
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
                 }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+
+                }
+            });
+
+            setupViewPager(viewPager);
+
+            setUpWithTabIcons();
+
+        }
+
+
+
+
+        class FragmentAdapter extends FragmentPagerAdapter {
+
+            private final List<Fragment> mFragmentList = new ArrayList<>();
+
+            public FragmentAdapter(FragmentManager fm) {
+                super(fm);
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            public Fragment getItem(int position) {
 
+                return mFragmentList.get(position);
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
+            public int getCount() {
+                return mFragmentList.size();
             }
-        });
 
-        setupViewPager(viewPager);
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return null;
+            }
 
-        setUpWithTabIcons();
-    }
-
-    class FragmentAdapter extends FragmentPagerAdapter {
-
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-
-        public FragmentAdapter(FragmentManager fm) {
-            super(fm);
+            public void addFragment(Fragment fragment) {
+                mFragmentList.add(fragment);
+            }
         }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return null;
-        }
-
-        public void addFragment(Fragment fragment) {
-            mFragmentList.add(fragment);
-        }
-    }
 
     private void setupViewPager(ViewPager viewPager) {
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());

@@ -41,6 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signInIntent = new Intent(getApplicationContext(), SignInActivity.class);
                 startActivity(signInIntent);
+                finish();
             }
         });
 
@@ -76,6 +77,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Intent MainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
                     MainActivityIntent.putExtra("Username",UsernameSignUpResponse);
                     startActivity(MainActivityIntent);
+                    finish();
                 }
 
 
@@ -135,4 +137,6 @@ public class SignUpActivity extends AppCompatActivity {
 
 
      }
+
+
 }
