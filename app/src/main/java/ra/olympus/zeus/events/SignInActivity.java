@@ -72,6 +72,8 @@ public class SignInActivity extends AppCompatActivity {
                 SendSignInRequest(user);
 
 
+
+
             }
         });
 
@@ -103,14 +105,18 @@ public class SignInActivity extends AppCompatActivity {
 
                     sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
 
-                    sharedPref.edit().putString("Username",user.getUsername());
-                    sharedPref.edit().putString("Password", user.getPassword());
+                    sharedPref.edit().putString("Username",user.getUsername()).commit();
+                    sharedPref.edit().putString("Password", user.getPassword()).commit();
 
 
                     Intent MainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
                     MainActivityIntent.putExtra("Username",user.getUsername());
                     startActivity(MainActivityIntent);
                     finish();
+
+
+
+
 
 
                 }
