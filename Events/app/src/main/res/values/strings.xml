@@ -20,4 +20,5 @@
         <item>Interested</item>
         <item>Attending</item>
     </string-array>
+    <string name="title_activity_subscriptions">subscriptions</string>
 </resources>
