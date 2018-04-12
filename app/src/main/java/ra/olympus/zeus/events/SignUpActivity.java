@@ -113,6 +113,18 @@ public class SignUpActivity extends AppCompatActivity {
 
                  }
 
+                 else{
+
+                     switch (response.code()){
+
+                         case 500:
+                             Toast.makeText(SignUpActivity.this,"Server returned error: Duplicate detected", Toast.LENGTH_SHORT).show();
+                             break;
+
+                     }
+
+                 }
+
 
              }
 
