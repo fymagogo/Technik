@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -98,42 +99,32 @@ public class SignUpActivity extends AppCompatActivity {
 
      private void SendNetworkRequest(UserDetails user){
          EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
-         Call<UserDetails> call = client.sendUserDetails(user);
+         Call<ResponseBody> call = client.sendUserDetails(user);
 
-        call.enqueue(new Callback<UserDetails>() {
-            @Override
-            public void onResponse(Call<UserDetails> call, Response<UserDetails> response) {
-                if(response.isSuccessful()){
-                    Toast.makeText(SignUpActivity.this, "Success", Toast.LENGTH_SHORT).show();
+         call.enqueue(new Callback<ResponseBody>() {
+             @Override
+             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                 if(response.isSuccessful()){
+                     Toast.makeText(SignUpActivity.this,"Success",Toast.LENGTH_SHORT).show();
 
-                    UsernameSignUpResponse = response.body().getUserName();
+                     Intent SignInIntent = new Intent(getApplicationContext(),SignInActivity.class);
+                     startActivity(SignInIntent);
+                     finish();
 
-
-                }
-                else{
-                        //response code is supposed to come from the back end
-                    switch (response.code()){
-
-                        case 500:
-                            Toast.makeText(SignUpActivity.this,"Server returned error: Duplicate detected", Toast.LENGTH_SHORT).show();
-
-                        default:
-                            Toast.makeText(SignUpActivity.this, "Server returned error: Unknown error", Toast.LENGTH_SHORT).show();
+                 }
 
 
-                    }
+             }
 
-                }
+             @Override
+             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-            }
+                 Toast.makeText(SignUpActivity.this,"You have no connection", Toast.LENGTH_SHORT).show();
 
-            @Override
-            public void onFailure(Call<UserDetails> call, Throwable t) {
+             }
+         });
 
-                Toast.makeText(SignUpActivity.this, "You have no connection", Toast.LENGTH_SHORT).show();
 
-            }
-        });
 
 
      }

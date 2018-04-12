@@ -16,7 +16,7 @@ import retrofit2.http.Path;
 
 public interface EventHubClient {
     @POST("signup")
-    Call<UserDetails> sendUserDetails (@Body UserDetails user);
+    Call<ResponseBody> sendUserDetails (@Body UserDetails user);
 
     @POST("login")
     Call<ResponseBody> sendSignInDetails (@Body UserSignIn user);
