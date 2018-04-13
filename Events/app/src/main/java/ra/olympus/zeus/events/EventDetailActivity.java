@@ -18,7 +18,7 @@ public class EventDetailActivity extends AppCompatActivity {
         Toolbar toolbar = this.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             ActionBar bar = getSupportActionBar();
             bar.setTitle("GESA Week");
             bar.setDisplayHomeAsUpEnabled(true);
@@ -26,8 +26,9 @@ public class EventDetailActivity extends AppCompatActivity {
         }
 
     }
+}
 
-    @Override
+  /*  @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.settingsmenu, menu);
         return true;
@@ -41,5 +42,5 @@ public class EventDetailActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-}
+
+}*/

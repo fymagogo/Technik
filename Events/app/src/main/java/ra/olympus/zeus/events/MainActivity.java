@@ -168,21 +168,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.settingsmenu, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemID = item.getItemId();
-        switch (itemID){
-            case R.id.setting_action:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
 

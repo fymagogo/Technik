@@ -25,6 +25,9 @@
         <activity
             android:name=".EventDetailActivity"
             android:parentActivityName=".MainActivity" />
+        <activity android:name=".SubscriptionActivity">
+
+        </activity>
     </application>
 
 </manifest>
