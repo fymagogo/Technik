@@ -22,8 +22,8 @@
             android:orientation="vertical">
 
 
-            <com.github.siyamed.shapeimageview.RoundedImageView
-                android:id="@+id/comment_image"
+            <ImageView
+                android:id="@+id/event_detail_flyer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -31,9 +31,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/background"
-                app:siRadius="16dp"
-                app:siSquare="true" />
+                android:src="@drawable/background" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -43,14 +41,14 @@
                 android:padding="8dp">
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/event_interested_fab"
+                    android:id="@+id/event_detail_interested_fab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_favorite_fill"
                     app:fabSize="mini" />
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/event_attending_fab"
+                    android:id="@+id/event_detail_attending_fab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -72,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_below="@id/event_interested_fab"
+                    android:layout_below="@id/event_detail_interested_fab"
                     android:text="20"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/colorAccent"
@@ -90,8 +88,8 @@
                     android:id="@+id/number_attending_value_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/event_attending_fab"
-                    android:layout_below="@+id/event_attending_fab"
+                    android:layout_alignStart="@+id/event_detail_attending_fab"
+                    android:layout_below="@+id/event_detail_attending_fab"
                     android:text="42"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/colorAccent"
@@ -141,7 +139,7 @@
                             android:text="Time :" />
 
                         <TextView
-                            android:id="@+id/textView5"
+                            android:id="@+id/event_detail_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -161,7 +159,7 @@
                             android:text="Date" />
 
                         <TextView
-                            android:id="@+id/textView5"
+                            android:id="@+id/event_detail_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -181,6 +179,7 @@
                             android:text="Location" />
 
                         <TextView
+                            android:id="@+id/event_detail_location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -197,10 +196,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="contact" />
+                            android:text="Contact" />
 
                         <TextView
-                            android:id="@+id/textView5"
+                            android:id="@+id/event_detail_contact"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -222,6 +221,7 @@
                     android:padding="8dp">
 
                     <TextView
+                        android:id="@+id/event_detail_name"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="GESA WEEK"
@@ -230,7 +230,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/event_detail_description"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@+id/attending_text_view"

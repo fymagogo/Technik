@@ -11,6 +11,10 @@
     <!--Dialog names-->
     <string name="dialog_select_photo">SelectPhoto</string>
 
+    <!--Database nodes-->
+    <string name="node_users">users</string>
+    <string name="node_posts">posts</string>
+
     <string-array name="category_types">
         <item>Religion</item>
         <item>Entertainment</item>

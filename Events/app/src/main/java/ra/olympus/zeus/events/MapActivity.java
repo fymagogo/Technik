@@ -218,6 +218,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 //enterMapLocation.setText(name);
             }
         }
+        /*Intent i = new Intent(this, CreateEventActivity.class);
+        String eventName = place.getName().toString();
+        i.putExtra("EventName", eventName);
+        startActivity(i);*/
 
     }
 
