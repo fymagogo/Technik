@@ -108,10 +108,10 @@ public class PlaceAutocompleteAdapter
     /**
      * Returns an item from the last autocomplete query.
      */
-    @Override
+    /*@Override
     public static AutocompletePrediction getItem(int position) {
         return mResultList.get(position);
-    }
+    }*/
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -221,8 +221,7 @@ public class PlaceAutocompleteAdapter
         try {
             AutocompletePredictionBufferResponse autocompletePredictions = results.getResult();
 
-            Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount()
-                    + " predictions.");
+            //Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount() + " predictions.");
 
             // Freeze the results immutable representation that can be stored safely.
             return DataBufferUtils.freezeAndClose(autocompletePredictions);

@@ -9,7 +9,7 @@
     <string name="text_create_event">Create Event</string>
 
     <!--Dialog names-->
-    <string name="GalleryImage">SelectPhoto</string>
+    <string name="dialog_select_photo">SelectPhoto</string>
 
     <string-array name="category_types">
         <item>Religion</item>

@@ -22,15 +22,15 @@ import android.widget.TextView;
 public class SelectPhotoDialog extends DialogFragment {
 
     private static final String TAG = "SelectPhotoDialog";
-    private static final String int PICKFILE_REQUEST_CODE = 1234;
-    private static final String int CAMERA_REQUEST_CODE = 4321;
+    private static final int PICKFILE_REQUEST_CODE = 1234;
+    private static final int CAMERA_REQUEST_CODE = 4321;
 
-    public interface OnPhototSelectedListener{
+    public interface OnPhotoSelectedListener{
         void getImagePath(Uri imagePath);
         void getImageBitmsp(Bitmap bitmap);
 
     }
-    OnPhototSelectedListener mOnPhotoSelectedListener;
+    OnPhotoSelectedListener mOnPhotoSelectedListener;
 
     @Nullable
     @Override
@@ -88,7 +88,7 @@ public class SelectPhotoDialog extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         try {
-            mOnPhotoSelectedListener = (OnPhototSelectedListener) getActivity();
+            mOnPhotoSelectedListener = (OnPhotoSelectedListener) getActivity();
         }catch (ClassCastException e){
             Log.e(TAG,"onAttach : ClassCastException" + e.getMessage());
         }

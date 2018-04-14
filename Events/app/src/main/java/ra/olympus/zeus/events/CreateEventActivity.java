@@ -1,43 +1,54 @@
 package ra.olympus.zeus.events;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.media.ImageReader;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 
 import java.util.Calendar;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CreateEventActivity extends AppCompatActivity {
+public class CreateEventActivity extends AppCompatActivity implements SelectPhotoDialog.OnPhotoSelectedListener{
 
     //google play services
     private static final String TAG = "CreateEventActivity";
     private static final int ERROR_DIALOG_REQUEST = 9001;
+    private static final int REQUEST_CODE = 2;
 
     private DatePickerDialog.OnDateSetListener dateSetter;
     private TimePickerDialog.OnTimeSetListener timeSetter;
-    private CircleImageView eventFlyer;
-    private FloatingActionButton change_image;
+    private ImageView event_flyer;
+    private FloatingActionButton change_event_flyer_fab;
+    private Bitmap mSelectedBitmap;
+    private Uri mSelectedUri;
 
 
 
@@ -47,9 +58,15 @@ public class CreateEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
+        // Create global configuration and initialize ImageLoader with this config
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+			.build();
+        ImageLoader.getInstance().init(config);
+
 
         Toolbar toolbar = this.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        verifyPermissions();
 
         if(getSupportActionBar() != null ){
             ActionBar bar = getSupportActionBar();
@@ -58,10 +75,13 @@ public class CreateEventActivity extends AppCompatActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        CircleImageView eventFlyer = this.findViewById(R.id.image_of_user);
-        FloatingActionButton chnage_image = this.findViewById(R.id.change_user_image_fab);
+        event_flyer = this.findViewById(R.id.event_flyer);
+        change_event_flyer_fab = this.findViewById(R.id.change_event_flyer_fab);
 
 
+        //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        //init();
 
         final TextView setEventDate = this.findViewById(R.id.set_event_date_text_view);
         setEventDate.setOnClickListener(new View.OnClickListener() {
@@ -151,12 +171,13 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        change_image.setOnClickListener(new View.OnClickListener() {
+        change_event_flyer_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"onClick, opening dialog to choose new photo");
                 SelectPhotoDialog dialog = new SelectPhotoDialog();
-                dialog.show(getFragmentManager(), getString(R.string.GalleryImage));
+                dialog.show(getSupportFragmentManager(), getString(R.string.dialog_select_photo));
+
             }
         });
     }
@@ -170,12 +191,57 @@ public class CreateEventActivity extends AppCompatActivity {
             Log.d(TAG, "Google Play Services is working");
             return true;
         }else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
-            Log.d(TAG, "isServicesOK: an error occured but we can fix it");
+            Log.d(TAG, "isServicesOK: an error occurred but we can fix it");
             Dialog dialog  = GoogleApiAvailability.getInstance().getErrorDialog(CreateEventActivity.this, available , ERROR_DIALOG_REQUEST);
             dialog.show();
         }else {
-            Toast.makeText(this, "We cant connect map requets", Toast.LENGTH_SHORT).show();;
+            Toast.makeText(this, "We cant connect map requets", Toast.LENGTH_SHORT).show();
         }
         return false;
+    }
+
+    @Override
+    public void getImagePath(Uri imagePath) {
+        Log.d(TAG, "getImagePath: setting the image to imageview");
+        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+        imageLoader.displayImage(imagePath.toString(), event_flyer);
+        //assign to global variable
+        mSelectedBitmap = null;
+        mSelectedUri = imagePath;
+    }
+
+    @Override
+    public void getImageBitmsp(Bitmap bitmap) {
+
+        Log.d(TAG, "getImageBitmap: setting the image to imageview");
+        event_flyer.setImageBitmap(bitmap);
+        //assign to a global variable
+        mSelectedUri = null;
+        mSelectedBitmap = bitmap;
+    }
+
+    private void verifyPermissions(){
+        Log.d(TAG,"verifyPermissions: asking user for permission");
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.CAMERA};
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[2]) == PackageManager.PERMISSION_GRANTED){
+            //setupViewPager(viewPager);
+
+        }else{
+            ActivityCompat.requestPermissions(CreateEventActivity.this,
+                    permissions,
+                    REQUEST_CODE);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        verifyPermissions();
     }
 }

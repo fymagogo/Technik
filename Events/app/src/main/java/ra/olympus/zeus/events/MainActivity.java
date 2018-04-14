@@ -25,6 +25,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int REQUEST_CODE = 2;
+    ViewPager viewPager;
 
     private String[] mPageTitles = {
             "Events",
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
        tabLayout = this.findViewById(R.id.tabs);
 
         ViewPager viewPager = this.findViewById(R.id.view_pager);
-        verifyPermissions();
+        //verifyPermissions();
 
         tabLayout.setupWithViewPager(viewPager);
 
@@ -173,17 +174,17 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
     }
 
-    private void verifyPermissions(){
+    /*private void verifyPermissions(){
         Log.d(TAG,"verifyPermissions: asking user for permission");
-        String[] permissions = (Manifest.permission.READ_EXTERNAL_STORAGE,
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.CAMERA)
+        Manifest.permission.CAMERA};
 
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 permissions[0]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 permissions[1]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 permissions[2]) == PackageManager.PERMISSION_GRANTED){
-            setupViewPager();
+            setupViewPager(viewPager);
 
         }else{
             ActivityCompat.requestPermissions(MainActivity.this,
@@ -196,5 +197,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         verifyPermissions();
-    }
+    }*/
 }
