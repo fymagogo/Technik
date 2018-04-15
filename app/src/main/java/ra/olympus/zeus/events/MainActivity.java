@@ -1,5 +1,7 @@
 package ra.olympus.zeus.events;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,9 +12,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -186,4 +193,45 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+
+       // MenuItem searchItem = menu.findItem(R.id.action_search);
+
+      //  SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+      //  SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+       // ComponentName componentName = new ComponentName(MainActivity.this,SearchableActivity.class);
+      //  searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setIconifiedByDefault(false);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+
+            case R.id.action_search:
+
+                break;
+
+            case R.id.action_settings:
+                break;
+
+
+            case R.id.account_details:
+                break;
+
+            case R.id.account_subscription:
+                break;
+
+        }
+
+
+
+        return super.onOptionsItemSelected(item);
+    }
 }
