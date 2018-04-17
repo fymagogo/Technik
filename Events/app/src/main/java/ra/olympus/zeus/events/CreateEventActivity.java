@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -36,10 +35,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -53,12 +54,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
-import ra.olympus.zeus.events.Models.Create;
+import ra.olympus.zeus.events.data.models.CreateEvent;
+import ra.olympus.zeus.events.data.remote.APIService;
+import ra.olympus.zeus.events.data.remote.ApiUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class CreateEventActivity extends AppCompatActivity implements SelectPhotoDialog.OnPhotoSelectedListener{
@@ -67,8 +68,11 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
     private static final String TAG = "CreateEventActivity";
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private static final int REQUEST_CODE = 2;
+    private static final int PLACE_PICKER_REQUEST = 67;
+    private static final int PLACE_PICKER_RESULT = 5;
     private byte[] mUploadBytes;
     private double mProgress = 0;
+    SelectPhotoDialog dialog;
 
     private DatePickerDialog.OnDateSetListener dateSetter;
     private TimePickerDialog.OnTimeSetListener timeSetter;
@@ -77,10 +81,15 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
     private Bitmap mSelectedBitmap;
     private Uri mSelectedUri;
     private EditText eventName, eventDescription, eventContact;
-    private TextView eventTime, eventDate;
+    private TextView eventTime, eventDate, eventLocation;
     private Button createEvent;
     private ProgressBar mProgressBar;
     private Spinner spinner;
+    String locationName=" ";
+    double eventLatitude;
+    double eventLongitude;
+    private APIService mAPIService;
+
 
 
 
@@ -107,8 +116,8 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Bundle name = getIntent().getExtras();
-        String eventname = name.getString("EventName");
+
+        mAPIService = ApiUtils.getAPIService();
 
         eventFlyer = this.findViewById(R.id.event_flyer);
         changeEventFlyerFab = this.findViewById(R.id.change_event_flyer_fab);
@@ -118,8 +127,21 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
         createEvent = this.findViewById(R.id.create_event_button);
         eventDate = this.findViewById(R.id.set_event_date_text_view);
         eventTime = this.findViewById(R.id.set_event_time_text_view);
+        eventLocation = this.findViewById(R.id.enter_map_location);
+        spinner = this.findViewById(R.id.events_category_spinner);
 
-        eventName.setText(eventname);
+        locationName=getIntent().getStringExtra("name");
+        if(locationName!=null){
+            eventLocation.setText(locationName);}
+        eventLatitude=getIntent().getDoubleExtra("latitude",0.00);
+
+
+        eventLongitude=getIntent().getDoubleExtra("longitude", 0.00);
+
+
+
+
+
 
 
         //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -197,11 +219,58 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
             }
         });
         spinner.setAdapter(adapter);
-        if(isServicesOK()){
+     /*   if(isServicesOK()){
             init();
-        }
+        }*/
+
+        changeEventFlyerFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"onClick, opening dialog to choose new photo");
+                System.out.println("onClick, opening dialog to choose new photo");
+                SelectPhotoDialog dialog = new SelectPhotoDialog();
+                dialog.show(getSupportFragmentManager(), getString(R.string.dialog_select_photo));
+                //dialog.dismiss();
+
+            }
+        });
+
     }
 
+    public void pickerClick(View view){
+
+        startActivity(new Intent(this,MyPlace_Picker.class));
+        /*PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        try {
+            startActivityForResult(builder.build(CreateEventActivity.this), PLACE_PICKER_REQUEST);
+
+
+        } catch (GooglePlayServicesRepairableException e) {
+            Log.e(TAG,"onClick: GooglePlayServicesRepairableException " + e.getMessage());
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Log.e(TAG,"onClick: GooglePlayServicesNotAvailableException " + e.getMessage());
+        }*/
+    }
+
+    /*public void flyerClick(View view){
+        Log.d(TAG,"onClick, opening dialog to choose new photo");
+        SelectPhotoDialog dialog = new SelectPhotoDialog();
+        dialog.show(getSupportFragmentManager(), getString(R.string.dialog_select_photo));
+    }*/
+
+    public void submitClick(View view){
+        Log.d(TAG, "onClick: attempting to post...");
+
+        //we have a bitmap and no Uri
+        if(mSelectedBitmap != null && mSelectedUri == null){
+            uploadNewPhoto(mSelectedBitmap);
+        }
+        //we have no bitmap and a uri
+        else if(mSelectedBitmap == null && mSelectedUri != null){
+            uploadNewPhoto(mSelectedUri);
+        }
+    }
 
 
     private void init(){
@@ -211,10 +280,20 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
             public void onClick(View view) {
                 Intent intent = new Intent(CreateEventActivity.this, MapActivity.class);
                 startActivity(intent);
+
+                /*PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                try {
+                    startActivityForResult(builder.build(CreateEventActivity.this), PLACE_PICKER_REQUEST);
+                } catch (GooglePlayServicesRepairableException e) {
+                    Log.e(TAG,"onClick: GooglePlayServicesRepairableException " + e.getMessage());
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    Log.e(TAG,"onClick: GooglePlayServicesNotAvailableException " + e.getMessage());
+                }*/
             }
         });
 
-        changeEventFlyerFab.setOnClickListener(new View.OnClickListener() {
+        /*changeEventFlyerFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"onClick, opening dialog to choose new photo");
@@ -222,7 +301,7 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
                 dialog.show(getSupportFragmentManager(), getString(R.string.dialog_select_photo));
 
             }
-        });
+        });*/
 
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,6 +319,24 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
             }
         });
     }
+
+/*
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode ==PLA) {
+
+                Place place = PlacePicker.getPlace(this, data);
+                String toastMsg = String.format("Place: %s", place.getName());
+
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                eventLocation.setText(toastMsg);
+
+
+            }
+        }
+
+    }*/
 
     private void uploadNewPhoto(Bitmap bitmap){
         Log.d(TAG, "uploadNewPhoto: uploading a new image bitmap to storage");
@@ -303,44 +400,46 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
         Toast.makeText(this, "uploading image", Toast.LENGTH_SHORT).show();
 
 
+        final String postId = FirebaseDatabase.getInstance().getReference().push().getKey();
 
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                .child("posts/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() +
-                        "/" + "/post_image");
+                .child("posts/users/" + postId+ "/post_image");
 
         UploadTask uploadTask = storageReference.putBytes(mUploadBytes);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                //Toast.makeText(this, "Post Success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateEventActivity.this, "Post Success", Toast.LENGTH_SHORT).show();
 
                 //insert the download url into the firebase database
                 Uri firebaseUri = taskSnapshot.getDownloadUrl();
 
                 Log.d(TAG, "onSuccess: firebase download url: " + firebaseUri.toString());
 
+                //sending to server after receiving firebase uri
 
-                Create event = new Create(
-                        firebaseUri.toString(),
-                eventName.getText().toString(),
-                eventDescription.getText().toString(),
-                eventContact.getText().toString(),
-                spinner.toString(),
-                eventDate.getText().toString(),
-                eventTime.getText().toString()
-                );
+                String EventName = eventName.getText().toString().trim();
+                long CategoryId = spinner.getSelectedItemId();
+                String MainImage = firebaseUri.toString().trim();
+                String EventDate = eventDate.getText().toString().trim();
+                String Description = eventDescription.getText().toString().trim();
+                String LocationName = eventLocation.getText().toString().trim();
+                double Latitude = eventLatitude;
+                double Longitude = eventLongitude;
+
+                /*sendEvent(EventName,CategoryId,MainImage,EventDate,Description,LocationName,Latitude,Longitude);*/
+                sendEvent(EventName,CategoryId,MainImage,Description,LocationName,Latitude,Longitude);
 
 
 
 
-                sendNetworkRequest(event);
 
-                //resetFields();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                //Toast.makeText(this, "could not upload photo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateEventActivity.this, "could not upload photo", Toast.LENGTH_SHORT).show();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -396,6 +495,27 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
         //assign to a global variable
         mSelectedUri = null;
         mSelectedBitmap = bitmap;
+
+
+    }
+
+    public void sendEvent(String EventName,long CategoryId,String MainImage,String Description,String LocationName,double Latitude,double Longitude){
+        mAPIService.createPost(EventName,CategoryId,MainImage,Description,LocationName,Latitude,Longitude).enqueue(new Callback<CreateEvent>() {
+            @Override
+            public void onResponse(Call<CreateEvent> call, Response<CreateEvent> response) {
+                if (response.isSuccessful()) {
+                    String respond = response.body().toString();
+                    Toast.makeText(CreateEventActivity.this, respond, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreateEvent> call, Throwable t) {
+                Toast.makeText(CreateEventActivity.this, "Unable to create event", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -423,39 +543,8 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         verifyPermissions();
     }
-    private void resetFields(){
-        //imageLoader.displayImage("", eventFlyer);
-        eventName.setText("");
-        eventDescription.setText("");
-        eventContact.setText("");
-        eventDate.setText("");
-        eventTime.setText("");
 
-    }
 
-    private void sendNetworkRequest(Create event){
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("")
-                .addConverterFactory(
-                        GsonConverterFactory.create()
-                        );
 
-        Retrofit retrofit = builder.build();
-
-        EventClient client = retrofit.create(EventClient.class);
-        Call<Create> call= client.createEvent(event);
-
-        call.enqueue(new Callback<Create>() {
-            @Override
-            public void onResponse(Call<Create> call, Response<Create> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<Create> call, Throwable t) {
-                Toast.makeText(CreateEventActivity.this,"Something went wrong", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 }

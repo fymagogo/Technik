@@ -1,26 +1,19 @@
 package ra.olympus.zeus.events;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import ra.olympus.zeus.events.Models.Create;
-import ra.olympus.zeus.events.Models.EventDetail;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EventDetailActivity extends AppCompatActivity {
 
     private TextView detailName,detailLocation,detailDescription,detailContact,detailDate,detailTime,detailInterested,detailAttending;
     private ImageView detailImage;
+    private FloatingActionButton like_fab;
 
 
     @Override
@@ -47,30 +40,19 @@ public class EventDetailActivity extends AppCompatActivity {
         detailInterested = findViewById(R.id.number_interested_value_text_view);
         detailTime = findViewById(R.id.event_detail_time);
         detailLocation = findViewById(R.id.event_detail_location);
+        like_fab = findViewById(R.id.event_detail_interested_fab);
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("")
-                .addConverterFactory(
-                        GsonConverterFactory.create()
-                );
-
-        Retrofit retrofit = builder.build();
-
-        EventDetailClient client = retrofit.create(EventDetailClient.class);
-        Call<EventDetail> call= client.getEvent("");
-
-        call.enqueue(new Callback<EventDetail>() {
-            @Override
-            public void onResponse(Call<EventDetail> call, Response<EventDetail> response) {
-
-                EventDetail events = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<EventDetail> call, Throwable t) {
-                Toast.makeText(EventDetailActivity.this,"Something went wrong", Toast.LENGTH_SHORT).show();
-            }
-        });
 
     }
+
+    public void likeClick(View view){
+
+        if(true) {
+            like_fab.setImageResource(R.drawable.ic_favorite_accent);
+        }else{
+            like_fab.setImageResource(R.drawable.ic_favorite_fill);
+        }
+    }
+
+
 }

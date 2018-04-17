@@ -22,7 +22,7 @@
             android:orientation="vertical">
 
 
-            <ImageView
+            <com.github.siyamed.shapeimageview.RoundedImageView
                 android:id="@+id/event_detail_flyer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,6 +31,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:scaleType="centerCrop"
+                app:siRadius="16dp"
+                app:siSquare="true"
                 android:src="@drawable/background" />
 
             <RelativeLayout
@@ -45,6 +47,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_favorite_fill"
+                    android:onClick="likeClick"
+                    app:liked = "true"
                     app:fabSize="mini" />
 
                 <android.support.design.widget.FloatingActionButton

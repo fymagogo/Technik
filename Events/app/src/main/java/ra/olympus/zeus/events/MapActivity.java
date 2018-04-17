@@ -52,7 +52,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ra.olympus.zeus.events.Models.PlaceInfo;
+
 
 
 /**
@@ -105,7 +105,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private PlaceAutocompleteAdapter placeAutocompleteAdapter;
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
-    private PlaceInfo mPlace;
     private TextView enterMapLocation;
     private ImageView mPlacePicker;
 
@@ -181,7 +180,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }));
 
-        mPlacePicker.setOnClickListener(new View.OnClickListener() {
+        Searchinput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -211,17 +210,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
-                /*final Place place1 = PlacePicker.getPlace(this, data);
-                final CharSequence name = place1.getName();*/
-                //final String placeID = place1.getId();
-
-                //enterMapLocation.setText(name);
             }
         }
-        /*Intent i = new Intent(this, CreateEventActivity.class);
-        String eventName = place.getName().toString();
-        i.putExtra("EventName", eventName);
-        startActivity(i);*/
 
     }
 
@@ -398,7 +388,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 mPlace.setWebsiteUri(place.getWebsiteUri());
 
                 Log.d(TAG,"onResult: place details: " + mPlace.toString());*/
-                mPlace = new PlaceInfo();
+                /*mPlace = new PlaceInfo();
                 mPlace.setName(place.getName().toString());
                 Log.d(TAG, "onResult: name: " + place.getName());
                 mPlace.setAddress(place.getAddress().toString());
@@ -414,7 +404,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 mPlace.setWebsiteUri(place.getWebsiteUri());
                 Log.d(TAG, "onResult: website uri: " + place.getWebsiteUri());
 
-                Log.d(TAG, "onResult: place: " + mPlace.toString());
+                Log.d(TAG, "onResult: place: " + mPlace.toString())*/;
 
             }catch (NullPointerException e){
                 Log.e(TAG,"onResult: NullPointerException: " + e.getMessage());
@@ -424,10 +414,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
 
-            moveCamera(new LatLng(place.getViewport().getCenter().latitude,
+            /*moveCamera(new LatLng(place.getViewport().getCenter().latitude,
                     place.getViewport().getCenter().longitude),DEFAULT_ZOOM,mPlace.getName() );
 
-            places.release();
+            places.release();*/
 
         }
     };

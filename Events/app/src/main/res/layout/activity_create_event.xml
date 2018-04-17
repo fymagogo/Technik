@@ -42,6 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
+
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/ic_camera_alt"
                     app:fabSize="normal" />
@@ -117,6 +118,8 @@
 
                     <TextView
                         android:id="@+id/enter_map_location"
+                        android:onClick="pickerClick"
+                        android:clickable="true"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -208,7 +211,9 @@
                     android:elevation="6dp"
                     android:text="Create Event"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    android:clickable="true"
+                    android:onClick="submitClick"/>
 
             </LinearLayout>
         </LinearLayout>

@@ -3,31 +3,31 @@ package ra.olympus.zeus.events.data.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Create {
+public class CreateEvent {
     @SerializedName("EventName")
     @Expose
     private String EventName;
     @SerializedName("CategoryId")
     @Expose
-    private String CategoryId;
+    private int CategoryId;
     @SerializedName("MainImage")
     @Expose
     private String MainImage;
     @SerializedName("EventDate")
     @Expose
-    private String EventDate;
+   /* private String EventDate;
     @SerializedName("Description")
-    @Expose
+    @Expose*/
     private String Description;
     @SerializedName("LocationName")
     @Expose
     private String LocationName;
     @SerializedName("Latitude")
     @Expose
-    private String Latitude;
+    private double Latitude;
     @SerializedName("Longitude")
     @Expose
-    private String Longitude;
+    private double Longitude;
 
     public String getEventName() {
         return EventName;
@@ -37,11 +37,11 @@ public class Create {
         EventName = eventName;
     }
 
-    public String getCategoryId() {
+    public int getCategoryId() {
         return CategoryId;
     }
 
-    public void setCategoryId(String categoryId) {
+    public void setCategoryId(int categoryId) {
         CategoryId = categoryId;
     }
 
@@ -53,13 +53,13 @@ public class Create {
         MainImage = mainImage;
     }
 
-    public String getEventDate() {
+    /*public String getEventDate() {
         return EventDate;
     }
 
     public void setEventDate(String eventDate) {
         EventDate = eventDate;
-    }
+    }*/
 
     public String getDescription() {
         return Description;
@@ -77,19 +77,19 @@ public class Create {
         LocationName = locationName;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return Latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         Latitude = latitude;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return Longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         Longitude = longitude;
     }
 
@@ -99,7 +99,7 @@ public class Create {
                 "EventName='" + EventName + '\'' +
                 ", CategoryId='" + CategoryId + '\'' +
                 ", MainImage='" + MainImage + '\'' +
-                ", EventDate='" + EventDate + '\'' +
+                /*", EventDate='" + EventDate + '\'' +*/
                 ", Description='" + Description + '\'' +
                 ", LocationName='" + LocationName + '\'' +
                 ", Latitude='" + Latitude + '\'' +

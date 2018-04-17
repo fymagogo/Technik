@@ -64,12 +64,17 @@ public class SelectPhotoDialog extends DialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         //Results when selecting new image from gallery
-        if (requestCode == PICKFILE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            Uri selectedImageUri = data.getData();
-            Log.d(TAG,"onActivityResult: " + selectedImageUri);
-            //send Uri to CreateEvent Activity
-            mOnPhotoSelectedListener.getImagePath(selectedImageUri);
-            getDialog().dismiss();
+        if (requestCode == PICKFILE_REQUEST_CODE ){
+            if (resultCode == Activity.RESULT_OK) {
+                Uri selectedImageUri = data.getData();
+                Log.d(TAG,"onActivityResult: " + selectedImageUri);
+                //send Uri to CreateEvent Activity
+                mOnPhotoSelectedListener.getImagePath(selectedImageUri);
+                getDialog().dismiss();
+
+            }
+
+
 
 
             //Results when selecting new image from gallery
@@ -82,6 +87,8 @@ public class SelectPhotoDialog extends DialogFragment {
             //send photo to CreateEvent Activity
             mOnPhotoSelectedListener.getImageBitmsp(bitmap);
             getDialog().dismiss();
+
+
         }
     }
 
