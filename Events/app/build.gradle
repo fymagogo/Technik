@@ -55,7 +55,7 @@ dependencies {
     compile 'com.google.firebase:firebase-database:15.0.0'
 
 
-    compile 'com.github.jd-alexander:LikeButton:0.2.3'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 }
 
 

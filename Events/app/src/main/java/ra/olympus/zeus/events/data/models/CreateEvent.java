@@ -9,15 +9,15 @@ public class CreateEvent {
     private String EventName;
     @SerializedName("CategoryId")
     @Expose
-    private int CategoryId;
+    private long CategoryId;
     @SerializedName("MainImage")
     @Expose
     private String MainImage;
     @SerializedName("EventDate")
     @Expose
-   /* private String EventDate;
+    private String EventDate;
     @SerializedName("Description")
-    @Expose*/
+    @Expose
     private String Description;
     @SerializedName("LocationName")
     @Expose
@@ -29,6 +29,10 @@ public class CreateEvent {
     @Expose
     private double Longitude;
 
+    public CreateEvent() {
+
+    }
+
     public String getEventName() {
         return EventName;
     }
@@ -37,11 +41,11 @@ public class CreateEvent {
         EventName = eventName;
     }
 
-    public int getCategoryId() {
+    public long getCategoryId() {
         return CategoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(long categoryId) {
         CategoryId = categoryId;
     }
 
@@ -53,13 +57,13 @@ public class CreateEvent {
         MainImage = mainImage;
     }
 
-    /*public String getEventDate() {
+    public String getEventDate() {
         return EventDate;
     }
 
     public void setEventDate(String eventDate) {
         EventDate = eventDate;
-    }*/
+    }
 
     public String getDescription() {
         return Description;
@@ -91,19 +95,5 @@ public class CreateEvent {
 
     public void setLongitude(double longitude) {
         Longitude = longitude;
-    }
-
-    @Override
-    public String toString() {
-        return "Create{" +
-                "EventName='" + EventName + '\'' +
-                ", CategoryId='" + CategoryId + '\'' +
-                ", MainImage='" + MainImage + '\'' +
-                /*", EventDate='" + EventDate + '\'' +*/
-                ", Description='" + Description + '\'' +
-                ", LocationName='" + LocationName + '\'' +
-                ", Latitude='" + Latitude + '\'' +
-                ", Longitude='" + Longitude + '\'' +
-                '}';
     }
 }

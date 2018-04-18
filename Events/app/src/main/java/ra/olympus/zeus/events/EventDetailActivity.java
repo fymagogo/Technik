@@ -6,14 +6,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import ra.olympus.zeus.events.data.models.EventDetail;
 
 public class EventDetailActivity extends AppCompatActivity {
 
     private TextView detailName,detailLocation,detailDescription,detailContact,detailDate,detailTime,detailInterested,detailAttending;
     private ImageView detailImage;
     private FloatingActionButton like_fab;
+    Boolean flag=false;
 
 
     @Override
@@ -31,6 +35,7 @@ public class EventDetailActivity extends AppCompatActivity {
             bar.setDisplayShowHomeEnabled(true);
         }
 
+
         detailName = findViewById(R.id.event_detail_name);
         detailImage = findViewById(R.id.event_detail_flyer);
         detailAttending = findViewById(R.id.number_attending_value_text_view);
@@ -47,12 +52,17 @@ public class EventDetailActivity extends AppCompatActivity {
 
     public void likeClick(View view){
 
-        if(true) {
+
+
+        if(flag ==false) {
             like_fab.setImageResource(R.drawable.ic_favorite_accent);
+            flag = true;
         }else{
             like_fab.setImageResource(R.drawable.ic_favorite_fill);
+            flag = false;
         }
     }
+
 
 
 }

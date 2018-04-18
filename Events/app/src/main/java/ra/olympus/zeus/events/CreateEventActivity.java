@@ -35,10 +35,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,9 +50,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
+import okhttp3.ResponseBody;
+
 import ra.olympus.zeus.events.data.models.CreateEvent;
-import ra.olympus.zeus.events.data.remote.APIService;
-import ra.olympus.zeus.events.data.remote.ApiUtils;
+import ra.olympus.zeus.events.data.remote.EventHubClient;
+import ra.olympus.zeus.events.data.remote.ServiceGenerator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,7 +86,8 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
     String locationName=" ";
     double eventLatitude;
     double eventLongitude;
-    private APIService mAPIService;
+
+
 
 
 
@@ -117,7 +116,6 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
         }
 
 
-        mAPIService = ApiUtils.getAPIService();
 
         eventFlyer = this.findViewById(R.id.event_flyer);
         changeEventFlyerFab = this.findViewById(R.id.change_event_flyer_fab);
@@ -129,6 +127,8 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
         eventTime = this.findViewById(R.id.set_event_time_text_view);
         eventLocation = this.findViewById(R.id.enter_map_location);
         spinner = this.findViewById(R.id.events_category_spinner);
+
+
 
         locationName=getIntent().getStringExtra("name");
         if(locationName!=null){
@@ -427,8 +427,23 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
                 double Latitude = eventLatitude;
                 double Longitude = eventLongitude;
 
-                /*sendEvent(EventName,CategoryId,MainImage,EventDate,Description,LocationName,Latitude,Longitude);*/
-                sendEvent(EventName,CategoryId,MainImage,Description,LocationName,Latitude,Longitude);
+                CreateEvent createEvent = new CreateEvent();
+
+                createEvent.setEventName(EventName);
+                createEvent.setCategoryId(CategoryId);
+                createEvent.setMainImage(MainImage);
+                createEvent.setEventDate(EventDate);
+                createEvent.setDescription(Description);
+                createEvent.setLocationName(LocationName);
+                createEvent.setLatitude(Latitude);
+                createEvent.setLongitude(Longitude);
+
+                SendNetworkRequest(createEvent);
+
+
+
+
+
 
 
 
@@ -457,6 +472,49 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality,stream);
         return stream.toByteArray();
+    }
+
+
+    private void SendNetworkRequest(CreateEvent createEvent){
+        EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
+        Call<CreateEvent> call = client.creatingEvent(createEvent);
+
+        call.enqueue(new Callback<CreateEvent>() {
+            @Override
+            public void onResponse(Call<CreateEvent> call, Response<CreateEvent> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(CreateEventActivity.this, "Event Created", Toast.LENGTH_SHORT).show();
+
+
+
+
+                }
+                else{
+                    //response code is supposed to come from the back end
+                    switch (response.code()){
+
+                        case 500:
+                            Toast.makeText(CreateEventActivity.this,"Event not created", Toast.LENGTH_SHORT).show();
+
+                        default:
+                            Toast.makeText(CreateEventActivity.this, "Server returned error: Unknown error", Toast.LENGTH_SHORT).show();
+
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CreateEvent> call, Throwable t) {
+
+                Toast.makeText(CreateEventActivity.this, "You have no connection", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
     }
 
 
@@ -499,24 +557,7 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
 
     }
 
-    public void sendEvent(String EventName,long CategoryId,String MainImage,String Description,String LocationName,double Latitude,double Longitude){
-        mAPIService.createPost(EventName,CategoryId,MainImage,Description,LocationName,Latitude,Longitude).enqueue(new Callback<CreateEvent>() {
-            @Override
-            public void onResponse(Call<CreateEvent> call, Response<CreateEvent> response) {
-                if (response.isSuccessful()) {
-                    String respond = response.body().toString();
-                    Toast.makeText(CreateEventActivity.this, respond, Toast.LENGTH_LONG).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<CreateEvent> call, Throwable t) {
-                Toast.makeText(CreateEventActivity.this, "Unable to create event", Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-    }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void verifyPermissions(){
