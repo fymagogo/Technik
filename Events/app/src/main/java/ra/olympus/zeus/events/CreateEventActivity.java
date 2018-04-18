@@ -397,7 +397,7 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
     }
 
     private void executeUploadTask(){
-        Toast.makeText(this, "uploading image", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Uploading image", Toast.LENGTH_SHORT).show();
 
 
         final String postId = FirebaseDatabase.getInstance().getReference().push().getKey();
@@ -409,7 +409,7 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(CreateEventActivity.this, "Post Success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateEventActivity.this, "Image Upload Successful", Toast.LENGTH_SHORT).show();
 
                 //insert the download url into the firebase database
                 Uri firebaseUri = taskSnapshot.getDownloadUrl();
@@ -509,7 +509,7 @@ public class CreateEventActivity extends AppCompatActivity implements SelectPhot
             @Override
             public void onFailure(Call<CreateEvent> call, Throwable t) {
 
-                Toast.makeText(CreateEventActivity.this, "You have no connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateEventActivity.this, "You have no connection to server", Toast.LENGTH_SHORT).show();
 
             }
         });

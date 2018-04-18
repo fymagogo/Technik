@@ -34,7 +34,7 @@ public class MyPlace_Picker extends AppCompatActivity {
             if (resultCode ==RESULT_OK) {
 
                 Place place = PlacePicker.getPlace(this, data);
-                String toastMsg = String.format("Place: %s", place.getName());
+                String toastMsg = String.format("%s", place.getName());
                 double lat =  place.getLatLng().latitude;
                 double lng = place.getLatLng().longitude;
 

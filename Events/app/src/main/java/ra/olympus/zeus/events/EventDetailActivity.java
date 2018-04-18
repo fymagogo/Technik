@@ -1,5 +1,6 @@
 package ra.olympus.zeus.events;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +18,9 @@ public class EventDetailActivity extends AppCompatActivity {
     private TextView detailName,detailLocation,detailDescription,detailContact,detailDate,detailTime,detailInterested,detailAttending;
     private ImageView detailImage;
     private FloatingActionButton like_fab;
-    Boolean flag=false;
+    Boolean like=false;
+    Boolean attending=false;
+    private FloatingActionButton attend_fab;
 
 
     @Override
@@ -46,6 +49,7 @@ public class EventDetailActivity extends AppCompatActivity {
         detailTime = findViewById(R.id.event_detail_time);
         detailLocation = findViewById(R.id.event_detail_location);
         like_fab = findViewById(R.id.event_detail_interested_fab);
+        attend_fab = findViewById(R.id.event_detail_attending_fab);
 
 
     }
@@ -54,15 +58,36 @@ public class EventDetailActivity extends AppCompatActivity {
 
 
 
-        if(flag ==false) {
+        if(like ==false) {
+            attend_fab.setImageResource(R.mipmap.ic_check);
+            like = true;
+        }else{
+            attend_fab.setImageResource(R.mipmap.ic_checkwhite);
+            like = false;
+        }
+    }
+
+    public void attend(View view){
+
+
+
+        if(attending ==false) {
             like_fab.setImageResource(R.drawable.ic_favorite_accent);
-            flag = true;
+            attending = true;
         }else{
             like_fab.setImageResource(R.drawable.ic_favorite_fill);
-            flag = false;
+            attending = false;
         }
+    }
+
+    public void locator(View view){
+        Intent intent = new Intent(EventDetailActivity.this, MapActivity.class);
+        startActivity(intent);
+
     }
 
 
 
 }
+
+

@@ -180,7 +180,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }));
 
-        Searchinput.setOnClickListener(new View.OnClickListener() {
+        /*Searchinput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -195,13 +195,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
 
             }
-        });
+        });*/
 
         hideSoftKeyboard();
     }
 
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /*protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Place place = PlacePicker.getPlace(this, data);
         String toastMsg = String.format("Place: %s", place.getLatLng());
         if (requestCode == PLACE_PICKER_REQUEST) {
@@ -213,7 +213,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
 
-    }
+    }*/
 
     private void geoLocate(){
         Log.d(TAG,"geoLocate: geolocating");

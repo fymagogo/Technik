@@ -35,7 +35,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/background" />
+                    android:src="@drawable/background"
+                    app:srcCompat="@mipmap/ic_blank" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/change_event_flyer_fab"

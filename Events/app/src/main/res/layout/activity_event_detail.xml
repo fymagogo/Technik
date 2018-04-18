@@ -44,7 +44,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/background"
+                android:src="@mipmap/ic_blank"
                 app:siRadius="16dp"
                 app:siSquare="true" />
 
@@ -70,11 +70,13 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
-                    android:src="@drawable/ic_done_all"
+                    android:src="@mipmap/ic_checkwhite"
+                    android:onClick="attend"
                     app:fabSize="mini" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/event_location_fab"
+                    android:onClick="locator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
