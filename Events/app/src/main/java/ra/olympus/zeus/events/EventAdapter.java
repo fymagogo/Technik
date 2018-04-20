@@ -18,8 +18,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         public EventAdapter(){}
 
-        public EventAdapter(List<Event> EventList){
-            this.mEventList = EventList;
+        public EventAdapter(List<Event> eventList){
+            this.mEventList = eventList;
         }
 
         @NonNull
