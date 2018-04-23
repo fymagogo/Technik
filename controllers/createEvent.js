@@ -41,15 +41,15 @@ router.post('/createEvent',function(req,res){
                     res.writeHead(500,"Internal server error",{"content-type":"application/json"});
                     res.end();
                     } 
-                  });
-
+                  
               res.writeHead(200,"event successfully created",{"content-type":"application/json"});
-              res.end();
-             console.log("event successfully created"); 
+               console.log("event successfully created"); 
+               res.end();
+
                   });
-               
+               });
              }  
-           });
-});
+        });
+   });
 
 module.exports = router;

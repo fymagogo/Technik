@@ -5,6 +5,7 @@ var express = require('express');
 var router = express.Router();
 const bcrypt = require("bcrypt");
 
+
 // send the usernames to the front end to check if its taken
 router.get('/signup',function(req,res){
   req.getConnection(function(err,connection){
@@ -51,28 +52,16 @@ router.post('/signup',function(req, res, next){
 
 // Using bcrypt to hash the password.
  bcrypt.hash(Password, saltRounds, function(err, hash) {
-     //query the database to insert into it. 
-   var query = connection.query( InsertUserInfo,[FirstName,LastName,PhoneNumber,Email,UserName,hash] , function(err, results){   
+     //query the database to insert into it.
+   var query = connection.query( InsertUserInfo,[FirstName,LastName,PhoneNumber,Email,UserName,hash] , function(err, results){
     if(err){
        console.error("Sql error " + err);
        res.writeHead(500,"Internal error",{"content-type":"application/json"});
        res.end();
        }
-       // send out the user's username and maybe id and email or so to the front end
-     var outputquery = "SELECT Firstname,Lastname,username,Email FROM users ORDER BY TimeAdded DESC LIMIT 1";
-       connection.query(outputquery,[],function(err,results){
-         if(err){
-          console.error("Sql error " + err);
-          res.writeHead(404, "Error not found", {
-            "content-type": "application/json"
-          });
-          res.end();
-
-         }
-         return res.json(results);
-         console.log("user registered successfully");
-       });
-        
+  
+      res.writeHead(200,{"content-type":"application/json"});
+      res.end();
              });
           });
         }
@@ -82,7 +71,7 @@ router.post('/signup',function(req, res, next){
   // HANDLER FOR USER EVENT CATEGORY SUSCRIPTIONS
   router.post('/usercategorysuscription',function(req,res){
     Usercategory_info = req.body;
-    
+
     req.getConnection(function(err, connection) {
       if (err) {
         console.error("Error " + err);
@@ -90,9 +79,9 @@ router.post('/signup',function(req, res, next){
       } else {
         console.log("CONNECTED");
         var subscribetoCategory = "INSERT INTO usersubscriptions VALUES (?,?)";
-        var query = connection.query(subscribetoCategory, [Usercategory_info.UserName,Usercategory_info.CategoryId], 
+        var query = connection.query(subscribetoCategory, [Usercategory_info.UserName,Usercategory_info.CategoryId],
           function(err,results,fields) {
-  
+
           if (err) {
             console.error("Sql error " + err);
             res.writeHead(400, "Bad request", {
@@ -100,7 +89,7 @@ router.post('/signup',function(req, res, next){
             });
             res.end();
           }
-  
+
           res.writeHead(200,{"content-type":"application/json"});
           res.end();
           console.log("category subscription successful");
