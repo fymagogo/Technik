@@ -21,6 +21,9 @@ public interface EventHubClient {
     @POST("login")
     Call<ResponseBody> sendSignInDetails (@Body UserSignIn user);
 
+    @GET("event")
+    Call<List<EventSearchClass>> getSearchResults (@Body String searchQuery);
+
 
 
 

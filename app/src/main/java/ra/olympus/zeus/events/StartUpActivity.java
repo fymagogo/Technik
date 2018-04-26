@@ -22,7 +22,7 @@ public class StartUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signInIntent = new Intent(getApplicationContext(), SignInActivity.class);
                 startActivity(signInIntent);
-                finish();
+
             }
         });
 
@@ -32,7 +32,7 @@ public class StartUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signUpIntent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivity(signUpIntent);
-                finish();
+
             }
         });
     }

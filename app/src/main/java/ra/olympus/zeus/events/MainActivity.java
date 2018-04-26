@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
       SharedPreferences sharedPref;
       sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN",Context.MODE_PRIVATE);
 
-      if (!(sharedPref.contains("Username") && sharedPref.contains("Password"))){
+
+     if (!(sharedPref.contains("Username") && sharedPref.contains("Password"))){
 
           Intent StartUpIntent = new Intent(getApplicationContext(),StartUpActivity.class);
           startActivity(StartUpIntent);
@@ -226,6 +227,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.account_subscription:
+                break;
+
+            case R.id.account_logout:
                 break;
 
         }

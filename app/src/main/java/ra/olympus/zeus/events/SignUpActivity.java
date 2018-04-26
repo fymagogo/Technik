@@ -1,6 +1,8 @@
 package ra.olympus.zeus.events;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -22,14 +24,10 @@ import retrofit2.Retrofit;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    String UsernameSignUpResponse;
+
     ScrollView mylayout;
     AnimationDrawable animationDrawable;
 
-  /*  public boolean isValidText (String textstring){
-        return textstring.matches("^([A-Za-z]+)(\\\\s[A-Za-z]+)*\\\\s?$");
-
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signInIntent = new Intent(getApplicationContext(), SignInActivity.class);
                 startActivity(signInIntent);
-                finish();
+
             }
         });
 
@@ -73,15 +71,6 @@ public class SignUpActivity extends AppCompatActivity {
 
                 SendNetworkRequest(user);
 
-                if (user.getUserName()==UsernameSignUpResponse){
-
-                    Intent MainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
-                    MainActivityIntent.putExtra("Username",UsernameSignUpResponse);
-                    startActivity(MainActivityIntent);
-                    finish();
-                }
-
-
 
             }
         });
@@ -97,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity {
 
      }
 
-     private void SendNetworkRequest(UserDetails user){
+     private void SendNetworkRequest(final UserDetails user){
          EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
          Call<ResponseBody> call = client.sendUserDetails(user);
 
@@ -105,10 +94,16 @@ public class SignUpActivity extends AppCompatActivity {
              @Override
              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                  if(response.isSuccessful()){
-                     Toast.makeText(SignUpActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                     SharedPreferences sharedPref;
 
-                     Intent SignInIntent = new Intent(getApplicationContext(),SignInActivity.class);
-                     startActivity(SignInIntent);
+                     sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
+                     sharedPref.edit().putString("Username",user.getUserName());
+                     sharedPref.edit().putString("Password",user.getPassword());
+                     sharedPref.edit().apply();
+
+                     Intent MainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
+                     MainActivityIntent.putExtra("Username",user.getUserName());
+                     startActivity(MainActivityIntent);
                      finish();
 
                  }

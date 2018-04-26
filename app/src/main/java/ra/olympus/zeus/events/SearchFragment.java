@@ -5,6 +5,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,8 +15,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SearchFragment extends Fragment{
+
+    private List<EventSearchClass> eventSearchClassList = new ArrayList<>();
+    private EventAdapter eventAdapter;
+    private View itemView;
+    private RecyclerView recyclerView;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -47,9 +58,26 @@ public class SearchFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        itemView = inflater.inflate(R.layout.fragment_search, container, false);
+        recyclerView = itemView.findViewById(R.id.searchRecyclerView);
+
+        eventAdapter = new EventAdapter(eventSearchClassList,getContext());
+        RecyclerView.LayoutManager eLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(eLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(eventAdapter);
+
+        prepareEvents();
+
+        return itemView;
     }
 
+    private void prepareEvents() {
+        for(int i=0; i< 30; i++){
+            eventSearchClassList.add(new EventSearchClass("Event" + i, "10-2-18", ""));
+        }
+        eventAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

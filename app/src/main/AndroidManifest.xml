@@ -12,10 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".SearchableActivity">
-
-
-
+        <activity android:name=".SplashActivity">
 
         </activity>
 
@@ -45,6 +42,7 @@
         <activity android:name=".SignUpActivity"></activity>
 
         <activity android:name=".EventDetailActivity" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".SearchableActivity" />
     </application>
 
 </manifest>
