@@ -1,19 +1,18 @@
-package ra.olympus.zeus.events;
+package ra.olympus.zeus.events.Search.Recycler.Implement;
 
-import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ra.olympus.zeus.events.EventHubClient;
+import ra.olympus.zeus.events.R;
+import ra.olympus.zeus.events.ServiceGenerator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,7 +37,7 @@ public class SearchableActivity extends AppCompatActivity{
         if (Intent.ACTION_SEARCH.equals(SearchIntent.getAction())){
            String query = SearchIntent.getStringExtra(SearchManager.QUERY);
            // doMySearch(query);
-            prepareEvents();
+
         }
 
 

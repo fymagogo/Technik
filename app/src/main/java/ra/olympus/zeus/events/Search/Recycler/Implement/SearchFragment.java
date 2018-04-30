@@ -1,4 +1,4 @@
-package ra.olympus.zeus.events;
+package ra.olympus.zeus.events.Search.Recycler.Implement;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -15,9 +15,12 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ra.olympus.zeus.events.R;
 
 
 public class SearchFragment extends Fragment{
@@ -68,6 +71,19 @@ public class SearchFragment extends Fragment{
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(eventAdapter);
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new RecyclerTouchListener.ClickListener() {
+
+            @Override
+            public void onClick(View view, int position) {
+                EventSearchClass eventSearchClass = eventSearchClassList.get(position);
+                Toast.makeText(getContext(),eventSearchClass.getEventname()+" is Selected!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
 
         prepareEvents();
 

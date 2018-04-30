@@ -2,13 +2,12 @@ package ra.olympus.zeus.events;
 
 import java.util.List;
 
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import ra.olympus.zeus.events.Search.Recycler.Implement.EventSearchClass;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 /**
  * Created by alfre on 04/04/2018.

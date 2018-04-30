@@ -1,4 +1,4 @@
-package ra.olympus.zeus.events;
+package ra.olympus.zeus.events.Search.Recycler.Implement;
 
 
 import com.google.gson.annotations.Expose;

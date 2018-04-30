@@ -1,4 +1,4 @@
-package ra.olympus.zeus.events;
+package ra.olympus.zeus.events.Search.Recycler.Implement;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+
+import ra.olympus.zeus.events.R;
 
 /**
  * Created by alfre on 26/04/2018.
@@ -31,9 +33,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         EventSearchClass event = eventSearchClasses.get(position);
         holder.event_name.setText(String.valueOf(event.getEventname()));
+        holder.event_date.setText(String.valueOf(event.getEventdate()));
 
     }
 
@@ -42,7 +45,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
         return eventSearchClasses.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
         private final TextView event_name;
@@ -56,6 +59,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
             event_name = (TextView) itemView.findViewById(R.id.event_name);
             event_date = (TextView) itemView.findViewById(R.id.event_date_search);
             event_image= (ImageView) itemView.findViewById(R.id.event_image_search);
+
+        }
+
+        @Override
+        public void onClick(View view) {
+
         }
     }
 }
