@@ -11,13 +11,14 @@ public class ServiceGenerator {
 
 
     //creating an okHttp client
-    static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+    static OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+            .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
 
 
 
 
      static Retrofit.Builder builder = new Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8000/")
+            .baseUrl("http://192.168.43.43:8000/")
             .addConverterFactory(GsonConverterFactory.create());
 
     static Retrofit  retrofit = builder.client(httpClient.build())

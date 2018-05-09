@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
        tabLayout = this.findViewById(R.id.tabs);
 
         ViewPager viewPager = this.findViewById(R.id.view_pager);
-        //verifyPermissions();
+        verifyPermissions();
 
         tabLayout.setupWithViewPager(viewPager);
 
@@ -174,17 +174,21 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
     }
 
-    /*private void verifyPermissions(){
+    private void verifyPermissions(){
         Log.d(TAG,"verifyPermissions: asking user for permission");
         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.CAMERA};
 
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 permissions[0]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 permissions[1]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[2]) == PackageManager.PERMISSION_GRANTED){
-            setupViewPager(viewPager);
+                permissions[2]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[3]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[4]) == PackageManager.PERMISSION_GRANTED){
+
 
         }else{
             ActivityCompat.requestPermissions(MainActivity.this,
@@ -197,5 +201,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         verifyPermissions();
-    }*/
+    }
 }

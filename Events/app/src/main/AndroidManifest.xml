@@ -43,7 +43,6 @@
             android:name=".EventDetailActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MapActivity" />
-        <activity android:name=".MyPlace_Picker"></activity>
     </application>
 
 </manifest>

@@ -46,7 +46,9 @@ public class EventsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent eventDetailIntent = new Intent(getContext(), EventDetailActivity.class);
+                //eventDetailIntent.putExtra("position_id", position_id);
                 startActivity(eventDetailIntent);
+
             }
         });
 

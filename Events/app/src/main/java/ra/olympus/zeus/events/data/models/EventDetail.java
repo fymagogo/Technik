@@ -50,59 +50,153 @@ public class EventDetail {
     public EventDetail() {
     }
 
+
+    public EventDetail(String eventName, Integer categoryId, String mainImage, String eventDate, String timeCreated, Integer locationId, Integer eventId, Integer interested, Integer attending, String description, String username, Double latitude, Double longitude, String locationName) {
+        this.eventName = eventName;
+        this.categoryId = categoryId;
+        this.mainImage = mainImage;
+        this.eventDate = eventDate;
+        this.timeCreated = timeCreated;
+        this.locationId = locationId;
+        this.eventId = eventId;
+        this.interested = interested;
+        this.attending = attending;
+        this.description = description;
+        this.username = username;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.locationName = locationName;
+    }
+
     public String getEventName() {
         return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
     public Integer getCategoryId() {
         return categoryId;
     }
 
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public String getMainImage() {
         return mainImage;
+    }
+
+    public void setMainImage(String mainImage) {
+        this.mainImage = mainImage;
     }
 
     public String getEventDate() {
         return eventDate;
     }
 
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
+    }
+
     public String getTimeCreated() {
         return timeCreated;
+    }
+
+    public void setTimeCreated(String timeCreated) {
+        this.timeCreated = timeCreated;
     }
 
     public Integer getLocationId() {
         return locationId;
     }
 
+    public void setLocationId(Integer locationId) {
+        this.locationId = locationId;
+    }
+
     public Integer getEventId() {
         return eventId;
+    }
+
+    public void setEventId(Integer eventId) {
+        this.eventId = eventId;
     }
 
     public Integer getInterested() {
         return interested;
     }
 
+    public void setInterested(Integer interested) {
+        this.interested = interested;
+    }
+
     public Integer getAttending() {
         return attending;
+    }
+
+    public void setAttending(Integer attending) {
+        this.attending = attending;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Double getLatitude() {
         return latitude;
     }
 
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     public Double getLongitude() {
         return longitude;
     }
 
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
     public String getLocationName() {
         return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
+
+    @Override
+    public String toString() {
+        return "EventDetail{" +
+                "eventName='" + eventName + '\'' +
+                ", categoryId=" + categoryId +
+                ", mainImage='" + mainImage + '\'' +
+                ", eventDate='" + eventDate + '\'' +
+                ", timeCreated='" + timeCreated + '\'' +
+                ", locationId=" + locationId +
+                ", eventId=" + eventId +
+                ", interested=" + interested +
+                ", attending=" + attending +
+                ", description='" + description + '\'' +
+                ", username='" + username + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", locationName='" + locationName + '\'' +
+                '}';
     }
 }

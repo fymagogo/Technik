@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class CreateEvent {
+
     @SerializedName("EventName")
     @Expose
     private String EventName;
@@ -16,6 +17,9 @@ public class CreateEvent {
     @SerializedName("EventDate")
     @Expose
     private String EventDate;
+    @SerializedName("Username")
+    @Expose
+    private String Username;
     @SerializedName("Description")
     @Expose
     private String Description;
@@ -31,6 +35,18 @@ public class CreateEvent {
 
     public CreateEvent() {
 
+    }
+
+    public CreateEvent(String eventName, long categoryId, String mainImage, String eventDate, String username, String description, String locationName, double latitude, double longitude) {
+        EventName = eventName;
+        CategoryId = categoryId;
+        MainImage = mainImage;
+        EventDate = eventDate;
+        Username = username;
+        Description = description;
+        LocationName = locationName;
+        Latitude = latitude;
+        Longitude = longitude;
     }
 
     public String getEventName() {
@@ -63,6 +79,14 @@ public class CreateEvent {
 
     public void setEventDate(String eventDate) {
         EventDate = eventDate;
+    }
+
+    public String getUsername() {
+        return Username;
+    }
+
+    public void setUsername(String username) {
+        Username = username;
     }
 
     public String getDescription() {

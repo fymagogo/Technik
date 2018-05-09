@@ -10,8 +10,24 @@ import android.view.View;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
+import ra.olympus.zeus.events.data.models.CreateEvent;
 import ra.olympus.zeus.events.data.models.EventDetail;
+import ra.olympus.zeus.events.data.remote.EventHubClient;
+import ra.olympus.zeus.events.data.remote.ServiceGenerator;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -21,6 +37,7 @@ public class EventDetailActivity extends AppCompatActivity {
     Boolean like=false;
     Boolean attending=false;
     private FloatingActionButton attend_fab;
+    int position_id;
 
 
     @Override
@@ -52,19 +69,11 @@ public class EventDetailActivity extends AppCompatActivity {
         attend_fab = findViewById(R.id.event_detail_attending_fab);
 
 
-    }
+         /*position_id = Integer.parseInt(getIntent().getStringExtra("position_id"));*/
 
-    public void likeClick(View view){
+         SendNetworkRequest();
 
 
-
-        if(like ==false) {
-            attend_fab.setImageResource(R.mipmap.ic_check);
-            like = true;
-        }else{
-            attend_fab.setImageResource(R.mipmap.ic_checkwhite);
-            like = false;
-        }
     }
 
     public void attend(View view){
@@ -72,11 +81,26 @@ public class EventDetailActivity extends AppCompatActivity {
 
 
         if(attending ==false) {
-            like_fab.setImageResource(R.drawable.ic_favorite_accent);
+            attend_fab.setImageResource(R.mipmap.ic_check);
             attending = true;
+
+        }else{
+            attend_fab.setImageResource(R.mipmap.ic_checkwhite);
+            attending = false;
+
+        }
+    }
+
+    public void likeClick(View view){
+
+
+
+        if(like ==false) {
+            like_fab.setImageResource(R.drawable.ic_favorite_accent);
+            like = true;
         }else{
             like_fab.setImageResource(R.drawable.ic_favorite_fill);
-            attending = false;
+            like = false;
         }
     }
 
@@ -85,6 +109,51 @@ public class EventDetailActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
+    int id = position_id;
+
+
+
+    private void SendNetworkRequest(){
+        EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
+        Call<JSONArray> call = client.gettingEvent(1);
+        call.enqueue(new Callback<JSONArray>() {
+            @Override
+            public void onResponse(Call<JSONArray> call, Response<JSONArray> response) {
+                if (response.isSuccessful()){
+                    String json = String.valueOf(response.body());
+                    Type type = new TypeToken<List<EventDetail>>(){}.getType();
+                    List<EventDetail> rvents = new Gson().fromJson(json, type);
+
+
+;
+                    EventDetail body = rvents.get(0);
+                    assert body != null;
+                    detailName.setText(body.getEventName());
+                    Picasso.with(EventDetailActivity.this).load(body.getMainImage()).into(detailImage);
+                    detailDescription.setText(body.getDescription());
+                    detailLocation.setText(body.getLocationName());
+                    detailTime.setText(body.getEventDate());
+
+
+
+                }else{
+                    Toast.makeText(EventDetailActivity.this, "coudnt retrive event", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JSONArray> call, Throwable t) {
+                Toast.makeText(EventDetailActivity.this, "could not connect to server", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+
+
+    }
+
 
 
 
