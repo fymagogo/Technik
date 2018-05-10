@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Created by alfre on 04/04/2018.
@@ -20,8 +21,8 @@ public interface EventHubClient {
     @POST("login")
     Call<ResponseBody> sendSignInDetails (@Body UserSignIn user);
 
-    @GET("event")
-    Call<List<EventSearchClass>> getSearchResults (@Body String searchQuery);
+    @GET("search/")
+    Call<List<EventSearchClass>> getSearchResults ( @Query("search_query") String name);
 
 
 
