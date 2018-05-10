@@ -25,6 +25,9 @@ public class EventDetail {
     @SerializedName("EventId")
     @Expose
     private Integer eventId;
+    @SerializedName("contact")
+    @Expose
+    private Integer contact;
     @SerializedName("Interested")
     @Expose
     private Integer interested;
@@ -51,7 +54,7 @@ public class EventDetail {
     }
 
 
-    public EventDetail(String eventName, Integer categoryId, String mainImage, String eventDate, String timeCreated, Integer locationId, Integer eventId, Integer interested, Integer attending, String description, String username, Double latitude, Double longitude, String locationName) {
+    public EventDetail(String eventName, Integer categoryId, String mainImage, String eventDate, String timeCreated, Integer locationId, Integer eventId, Integer contact, Integer interested, Integer attending, String description, String username, Double latitude, Double longitude, String locationName) {
         this.eventName = eventName;
         this.categoryId = categoryId;
         this.mainImage = mainImage;
@@ -59,6 +62,7 @@ public class EventDetail {
         this.timeCreated = timeCreated;
         this.locationId = locationId;
         this.eventId = eventId;
+        this.contact = contact;
         this.interested = interested;
         this.attending = attending;
         this.description = description;
@@ -122,6 +126,14 @@ public class EventDetail {
 
     public void setEventId(Integer eventId) {
         this.eventId = eventId;
+    }
+
+    public Integer getContact() {
+        return contact;
+    }
+
+    public void setContact(Integer contact) {
+        this.contact = contact;
     }
 
     public Integer getInterested() {
@@ -190,6 +202,7 @@ public class EventDetail {
                 ", timeCreated='" + timeCreated + '\'' +
                 ", locationId=" + locationId +
                 ", eventId=" + eventId +
+                ", contact=" + contact +
                 ", interested=" + interested +
                 ", attending=" + attending +
                 ", description='" + description + '\'' +
