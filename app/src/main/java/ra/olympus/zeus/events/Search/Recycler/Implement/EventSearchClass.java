@@ -23,6 +23,10 @@ public class EventSearchClass {
     @Expose
     private String mainimage;
 
+    @Expose
+    @SerializedName("eventid")
+    private int eventid;
+
     public EventSearchClass(String eventname, String eventdate, String mainimage) {
         this.eventname = eventname;
         this.eventdate = eventdate;
@@ -53,5 +57,7 @@ public class EventSearchClass {
         this.mainimage = mainimage;
     }
 
+    public void setEventid(int eventid) { this.eventid = eventid; }
 
+    public int getEventid(){return eventid; }
 }

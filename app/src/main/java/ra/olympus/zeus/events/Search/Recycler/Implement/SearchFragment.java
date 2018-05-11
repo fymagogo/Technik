@@ -37,6 +37,7 @@ public class SearchFragment extends Fragment{
     private EventAdapter eventAdapter;
     private View itemView;
     private RecyclerView recyclerView;
+    private int eventID;
 
     @Override
     public void onResume() {

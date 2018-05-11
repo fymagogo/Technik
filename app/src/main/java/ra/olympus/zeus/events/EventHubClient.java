@@ -22,7 +22,7 @@ public interface EventHubClient {
     Call<ResponseBody> sendSignInDetails (@Body UserSignIn user);
 
     @GET("search/")
-    Call<List<EventSearchClass>> getSearchResults ( @Query("search_query") String name);
+    Call <List<EventSearchClass>> getSearchResults ( @Query("search_query") String name);
 
 
 
