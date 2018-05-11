@@ -34,7 +34,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
             Event event = this.mEventList.get(position);
             Context context = holder.mContext;
-            holder.mEventImageView.setImageDrawable(context.getResources().getDrawable(event.getImageID()));
+            //holder.mEventImageView.setImageDrawable(context.getString(event.getImageLink());
             holder.mEventNameTextView.setText(event.getEventName());
             holder.mEventDateTextView.setText(event.getEventDate());
         }

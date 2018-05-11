@@ -1,26 +1,33 @@
 package ra.olympus.zeus.events;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Event {
-    private int imageID;
+
+    @SerializedName("imageLink")
+    @Expose
+    private String imageLink;
+    @SerializedName("eventName")
+    @Expose
     private String eventName;
+    @SerializedName("eventDate")
+    @Expose
     private String eventDate;
 
 
     public Event(){}
 
-    public Event(int imageID, String eventName, String eventDate) {
-        this.imageID = imageID;
+    public Event(String imageLink, String eventName, String eventDate) {
+        this.imageLink =imageLink;
         this.eventName = eventName;
         this.eventDate = eventDate;
     }
 
-    public int getImageID() {
-        return imageID;
-    }
+    public String getImageLink() { return imageLink; }
 
-    public void setImageID(int imageID) {
-        this.imageID = imageID;
-    }
+    public void setImageLink(String imageLink) { this.imageLink = imageLink; }
+
 
     public String getEventName() {
         return eventName;

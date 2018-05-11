@@ -15,12 +15,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventsFragment extends Fragment {
-
+    private ImageView mEventImageView;
+    private TextView mEventNameTextView;
+    private TextView mEventDateTextView;
     private String mQuery;
     private final String mBaseQuery = "";
+
 
     public EventsFragment() {
         // Required empty public constructor
@@ -72,16 +86,17 @@ public class EventsFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        mQuery = mBaseQuery.concat("my_events");
+                        mQuery = mBaseQuery.concat("events");
+                        SendAllEventsNetworkRequest();
                         break;
                     case 1:
-                        mQuery = mBaseQuery.concat("my_events");
+                        mQuery = mBaseQuery.concat("myEvents/{Username}");
                         break;
                     case 2:
-                        mQuery = mBaseQuery.concat("my_events");
+                        mQuery = mBaseQuery.concat("myinterested/{Username");
                         break;
                     case 3:
-                        mQuery = mBaseQuery.concat("my_events");
+                        mQuery = mBaseQuery.concat("myattending/{Username");
                         break;
                 }
             }
@@ -94,6 +109,34 @@ public class EventsFragment extends Fragment {
         spinner.setAdapter(adapter);
         return view;
     }
+public void SendAllEventsNetworkRequest(){
 
+
+        /*EventsClient client = ServiceGenerator.createService(EventsClient.class);
+        Call<List<Event>> call= client.gettingAllEvents();
+        call.enqueue(new Callback<List<Event>>() {
+            @Override
+            public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
+                if(response.isSuccessful()){
+                    List<Event> body = response.body();
+
+                    assert body != null;
+                    Picasso.with(EventsFragment.this).load(body.get(0).getImageLink()).into(mEventImageView);
+                    mEventNameTextView.setText(body.get(0).getEventName());
+                    mEventDateTextView.setText(body.get(0).getEventDate());
+
+                }else{
+                    Toast.makeText(EventsFragment.this, "Couldn't retrieve events", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Event>> call, Throwable t) {
+                Toast.makeText(EventsFragment.this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
+
+
+            }
+        });*/
+}
 
 }
