@@ -65,7 +65,7 @@
                     android:elevation="6dp"
                     android:hint="Event Name"
                     android:inputType="text"
-                    android:padding="8dp"
+                    android:padding="16dp"
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -80,7 +80,7 @@
                     android:elevation="6dp"
                     android:hint="Description"
                     android:inputType="text|textMultiLine"
-                    android:padding="8dp"
+                    android:padding="16dp"
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -95,7 +95,7 @@
                     android:elevation="6dp"
                     android:hint="Contact"
                     android:inputType="phone"
-                    android:padding="8dp"
+                    android:padding="16dp"
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
                     android:textAppearance="?android:attr/textAppearanceMedium" />

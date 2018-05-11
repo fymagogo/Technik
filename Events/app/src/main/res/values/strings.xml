@@ -16,9 +16,9 @@
 
     <string-array name="event_menu">
         <item>All Events</item>
-        <item>My Events</item>
+        <item>My Created Events</item>
         <item>Interested</item>
-        <item>Going</item>
-        <item>Subscription</item>
+        <item>Attending</item>
     </string-array>
+    <string name="title_activity_subscriptions">subscriptions</string>
 </resources>

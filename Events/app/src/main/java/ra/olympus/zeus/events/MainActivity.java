@@ -9,7 +9,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -21,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             "Events",
             "Categories",
             "Search",
-            "Notification"
+            "Notifications"
     };
 
     private int[] mTabIcons = {
@@ -118,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         setUpWithTabIcons();
     }
 
+
     class FragmentAdapter extends FragmentPagerAdapter {
 
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -162,5 +167,10 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(2).setIcon(mTabIcons[2]);
         tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
     }
+
+
+
+
+
 
 }

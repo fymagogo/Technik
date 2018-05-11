@@ -5,33 +5,29 @@
     android:layout_height="wrap_content"
     android:id="@+id/container"
     android:layout_margin="8dp"
-    app:cardCornerRadius="16dp">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
         android:orientation="vertical">
 
 
-        <com.github.siyamed.shapeimageview.RoundedImageView
+        <ImageView
             android:id="@+id/comment_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/background"
-            app:siRadius="16dp"
-            app:siSquare="true" />
+            android:src="@drawable/background"/>
 
         <TextView
             android:id="@+id/name_of_event_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:drawablePadding="20dp"
             android:gravity="center_vertical"
-            android:text="First Council of Nicea"
+            android:text="GESA WEEK"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorAccent"
             android:textStyle="bold" />
@@ -49,7 +45,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"
                 android:drawablePadding="20dp"
-                android:drawableStart="@drawable/ic_event"
+                android:drawableStart="@drawable/ic_event_black_24dp"
                 android:gravity="center_vertical"
                 android:text="29th August, 2018"
                 android:textAppearance="?android:attr/textAppearanceSmall"
@@ -58,7 +54,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_favorite_border" />
+                android:src="@drawable/ic_favorite_border_black_24dp" />
         </LinearLayout>
 
     </LinearLayout>
