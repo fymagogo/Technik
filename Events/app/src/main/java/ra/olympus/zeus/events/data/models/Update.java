@@ -3,17 +3,17 @@ package ra.olympus.zeus.events.data.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UpdateLike {
+public class Update {
 
     @SerializedName("Username")
     @Expose
     private String Username;
 
-    public UpdateLike() {
+    public Update() {
 
     }
 
-    public UpdateLike(String username) {
+    public Update(String username) {
         Username = username;
     }
 
@@ -27,7 +27,7 @@ public class UpdateLike {
 
     @Override
     public String toString() {
-        return "UpdateLike{" +
+        return "Update{" +
                 "Username='" + Username + '\'' +
                 '}';
     }

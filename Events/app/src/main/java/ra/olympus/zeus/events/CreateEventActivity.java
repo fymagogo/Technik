@@ -411,7 +411,10 @@ public class CreateEventActivity extends AppCompatActivity {
                 createEvent.setLatitude(Latitude);
                 createEvent.setLongitude(Longitude);
 
-                SendNetworkRequest(createEvent);
+                for (int i = 0;i < 1 ; i++) {
+
+                    SendNetworkRequest(createEvent);
+                }
 
 
             }
@@ -447,14 +450,14 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                //we have a bitmap and no Uri
+                /*//we have a bitmap and no Uri
                 if(mSelectedBitmap != null && mSelectedUri == null){
                     uploadNewPhoto(mSelectedBitmap);
                 }
                 //we have no bitmap and a uri
                 else if(mSelectedBitmap == null && mSelectedUri != null){
                     uploadNewPhoto(mSelectedUri);
-                }
+                }*/
 
                 if(response.code()==200){
                     Toast.makeText(CreateEventActivity.this, "Event Created", Toast.LENGTH_SHORT).show();
@@ -506,7 +509,7 @@ public class CreateEventActivity extends AppCompatActivity {
             Dialog dialog  = GoogleApiAvailability.getInstance().getErrorDialog(CreateEventActivity.this, available , ERROR_DIALOG_REQUEST);
             dialog.show();
         }else {
-            Toast.makeText(this, "We cant connect map requets", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "We cant connect map request", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
