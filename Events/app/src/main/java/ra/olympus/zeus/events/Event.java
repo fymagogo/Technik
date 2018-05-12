@@ -15,7 +15,6 @@ public class Event {
     @Expose
     private String eventDate;
 
-
     public Event(){}
 
     public Event(String imageLink, String eventName, String eventDate) {
@@ -44,8 +43,6 @@ public class Event {
     public void setEventDate(String eventDate) {
         this.eventDate = eventDate;
     }
-
-
 }
 
 

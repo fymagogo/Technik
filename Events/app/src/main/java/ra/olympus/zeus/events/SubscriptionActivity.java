@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 
 public class SubscriptionActivity extends AppCompatActivity {
+    private final String BASE_URL = "http://192.168.43.43:8000/";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,6 +1,7 @@
 package ra.olympus.zeus.events;
 
 import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,10 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     public SubscriptionAdapter(){}
 
-    private List<Subscription> mSubscriptiontList;
+    private List<Subscription> mSubscriptionList;
 
     public SubscriptionAdapter(List<Subscription> SubscriptionList){
-        this.mSubscriptiontList = SubscriptionList;
+        this.mSubscriptionList = SubscriptionList;
     }
 
 
@@ -30,7 +31,12 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     @Override
     public void onBindViewHolder(SubscriptionViewHolder holder, int position) {
+        holder.mAddSubscription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            }
+        });
     }
 
 
@@ -40,6 +46,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     }
 
     static class SubscriptionViewHolder extends RecyclerView.ViewHolder {
+        private FloatingActionButton mAddSubscription;
         private ImageView mSubscriptionImageView;
         private TextView mSubscriptionTextView;
         private Context mContext;
@@ -47,6 +54,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         public SubscriptionViewHolder(View itemView) {
             super(itemView);
             mContext = itemView.getContext();
+            mAddSubscription = itemView.findViewById(R.id.fab);
             mSubscriptionImageView = itemView.findViewById(R.id.subscription_image);
             mSubscriptionTextView = itemView.findViewById(R.id.subscription_title);
         }

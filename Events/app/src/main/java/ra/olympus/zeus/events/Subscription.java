@@ -1,9 +1,17 @@
 package ra.olympus.zeus.events;
 
 public class Subscription {
+    public int getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
+    }
+
+    private int categoryID;
     private int imageID;
     private String categoryName;
-
 
     public Subscription(){}
     public Subscription(int imageID, String categoryName) {

@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -34,9 +37,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
             Event event = this.mEventList.get(position);
             Context context = holder.mContext;
-            //holder.mEventImageView.setImageDrawable(context.getString(event.getImageLink());
             holder.mEventNameTextView.setText(event.getEventName());
             holder.mEventDateTextView.setText(event.getEventDate());
+            Picasso.get().load(event.getImageLink()).into(holder.mEventImageView);
         }
 
         @Override
@@ -57,7 +60,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 mEventImageView = itemView.findViewById(R.id.comment_image);
                 mEventNameTextView = itemView.findViewById(R.id.name_of_event_text_view);
                 mEventDateTextView = itemView.findViewById(R.id.logout_text_view);
-
             }
         }
     }
