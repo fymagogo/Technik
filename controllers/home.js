@@ -38,6 +38,38 @@ router.get("/events", function(req, res, next) {
     }
   });
 });
+//filter events by category
+router.get("/events/filter/:Category", function(req,res){
+  var category=req.params.Category;
+  //connection to database
+  req.getConnection(function(err,connection){
+    if(err){
+      console.log(err);
+      res.writeHead(500, "Internal Error");
+    }
+    else{
+      console.log("Connected");
+      var input="SELECT event.* FROM event,eventcategory WHERE event.CategoryId=eventcategory.CategoryId AND CategoryName=?";
+      connection.query(input, [category],function(err,results){
+        if(err){
+          res.writeHead(500, "Internal Error");
+        }
+        else{
+          console.log("Success");
+          return res.json(results);
+        }
+      });
+    }
+
+  });
+
+});
+
+
+
+
+
+
 // open specific event from home page.
 
 router.get("/events/:eventId", function(req, res) {
