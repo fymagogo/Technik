@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -69,9 +70,14 @@ public class SignUpActivity extends AppCompatActivity {
                 user.setUserName(UserName.getText().toString());
                 //Place username authentication here
 
-                SendNetworkRequest(user);
+                if(confirmPassword.equals(Password)) {
+                    SendNetworkRequest(user);
+                }
 
+                else{
+                    Toast.makeText(SignUpActivity.this,"Check that your password matches your confirm password field",Toast.LENGTH_SHORT).show();
 
+                }
             }
         });
 

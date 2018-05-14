@@ -7,6 +7,13 @@
     <string name="search_hint">Search Event</string>
     <string name="app_label">Search</string>
 
+
+    <string name="Change_Username">Change Username</string>
+    <string name="Change_Password">Change Password</string>
+    <string name="Logout">Logout</string>
+    <string name="Enable_notifications">Enable Notifications</string>
+    <string name="About">About</string>
+
     <string-array name="category_types">
         <item>Religion</item>
         <item>Entertainment</item>

@@ -39,12 +39,6 @@ public class SearchFragment extends Fragment{
     private RecyclerView recyclerView;
     private int eventID;
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

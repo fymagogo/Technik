@@ -38,6 +38,15 @@
 
         <activity android:name=".SignUpActivity"/>
 
+        <activity android:name=".Settings.ChangePasswordActivity"
+            android:parentActivityName=".Settings.SettingsActivity"/>
+
+        <activity android:name=".Settings.ChangeUsernameActivity"
+            android:parentActivityName=".Settings.SettingsActivity"/>
+
+        <activity android:name=".Settings.SettingsActivity"
+            android:parentActivityName=".MainActivity"/>
+
         <activity android:name=".EventDetailActivity" android:parentActivityName=".MainActivity">
 
         </activity>

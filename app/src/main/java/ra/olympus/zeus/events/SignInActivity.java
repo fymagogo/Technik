@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -107,8 +108,8 @@ public class SignInActivity extends AppCompatActivity {
 
                     sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
 
-                    sharedPref.edit().putString("Username",user.getUsername()).commit();
-                    sharedPref.edit().putString("Password", user.getPassword()).commit();
+                    sharedPref.edit().putString("Username",user.getUsername()).apply();
+                    sharedPref.edit().putString("Password", user.getPassword()).apply();
 
 
                     Intent MainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
