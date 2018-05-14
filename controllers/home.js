@@ -39,8 +39,8 @@ router.get("/events", function(req, res, next) {
   });
 });
 //filter events by category
-router.get("/events/filter/:Category", function(req,res){
-  var category=req.params.Category;
+router.get("/events/filter/:categoryid", function(req,res){
+  var category=req.params.categoryid;
   //connection to database
   req.getConnection(function(err,connection){
     if(err){
@@ -49,7 +49,7 @@ router.get("/events/filter/:Category", function(req,res){
     }
     else{
       console.log("Connected");
-      var input="SELECT event.* FROM event,eventcategory WHERE event.CategoryId=eventcategory.CategoryId AND CategoryName=?";
+      var input="SELECT event.* FROM event WHERE CategoryId=?";
       connection.query(input, [category],function(err,results){
         if(err){
           res.writeHead(500, "Internal Error");
