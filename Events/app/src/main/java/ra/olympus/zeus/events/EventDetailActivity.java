@@ -1,6 +1,10 @@
 package ra.olympus.zeus.events;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.StringTokenizer;
 
 import okhttp3.ResponseBody;
 import ra.olympus.zeus.events.data.models.EventDetail;
@@ -47,10 +52,22 @@ public class EventDetailActivity extends AppCompatActivity {
 
     int likes;
     String title;
+    String location;
+    String phone;
     Double lng,lat;
 
 
-    String event_url = "http://192.168.43.43:8000/events/1";
+    public static final String Like = "likeKey";
+    public static final String Attend = "attendKey";
+    public static final String User = "usernameKey";
+    private String Username;
+    private int event_id;
+    SharedPreferences sharedPref;
+    String liker;
+
+
+
+
 
 
     @Override
@@ -63,10 +80,19 @@ public class EventDetailActivity extends AppCompatActivity {
 
         if(getSupportActionBar() != null){
             ActionBar bar = getSupportActionBar();
-            bar.setTitle(title);
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setDisplayShowHomeEnabled(true);
         }
+
+
+        sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
+        Username = sharedPref.getString("Username",Username);
+
+        Bundle id = getIntent().getExtras();
+        event_id = id.getInt("EventId");
+
+
+
 
 
         detailName = findViewById(R.id.event_detail_name);
@@ -86,9 +112,16 @@ public class EventDetailActivity extends AppCompatActivity {
          /*position_id = Integer.parseInt(getIntent().getStringExtra("position_id"));*/
 
          SendNetworkRequest();
-         //GetRequest();
 
-        Toast.makeText(EventDetailActivity.this,"" + lat,Toast.LENGTH_SHORT).show();
+        like = sharedPref.getBoolean(Like,false);
+        if (like) {
+            like_fab.setImageResource(R.drawable.ic_favorite_accent);
+        }
+
+        attending = sharedPref.getBoolean(Attend,false);
+        if (attending) {
+            attend_fab.setImageResource(R.mipmap.ic_check);
+        }
 
 
     }
@@ -97,13 +130,17 @@ public class EventDetailActivity extends AppCompatActivity {
 
 
 
+        SharedPreferences.Editor editor = sharedPref.edit();
+
         if(!attending) {
+
             attend_fab.setImageResource(R.mipmap.ic_check);
             attending = true;
+            editor.putBoolean(Attend,true);
+            editor.apply();
 
             Update attend = new Update();
 
-            String Username = "Goat";
             attend.setUsername(Username);
             SendAttend(attend);
 
@@ -113,46 +150,68 @@ public class EventDetailActivity extends AppCompatActivity {
         }else{
             attend_fab.setImageResource(R.mipmap.ic_checkwhite);
             attending = false;
+            editor.putBoolean(Attend,false);
+            editor.apply();
 
             Update unattend = new Update();
-
-            String Username = "Goat";
             unattend.setUsername(Username);
             SendUnattend(unattend);
 
         }
     }
 
+
+
     public void likeClick(View view){
+
+        SharedPreferences.Editor editor = sharedPref.edit();
 
 
 
         if(!like) {
+
             like_fab.setImageResource(R.drawable.ic_favorite_accent);
             like = true;
+            /*detailInterested.setText(likes + 1);*/
+            editor.putBoolean(Like,true);
+            editor.putString(User, Username);
+            editor.apply();
 
             Update like = new Update();
 
-            String Username = "Goat";
+
             like.setUsername(Username);
             SendLike(like);
-            /*detailInterested.setText(likes + 1);*/
+            /*detailInterested.setText(liker + 1);*/
         }else{
             like_fab.setImageResource(R.drawable.ic_favorite_fill);
             like = false;
+            editor.putBoolean(Like,false);
+            editor.apply();
 
             Update unlike = new Update();
 
-            String Username = "Goat";
             unlike.setUsername(Username);
             SendUnlike(unlike);
+
             /*detailInterested.setText(likes - 1);*/
         }
     }
 
     public void locator(View view){
         Intent intent = new Intent(EventDetailActivity.this, MapActivity.class);
+        intent.putExtra("latitude", lat);
+        intent.putExtra("longitude", lng);
+        intent.putExtra("name", location);
         startActivity(intent);
+
+    }
+
+    public void calling(View view){
+
+
+        Intent call = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel",0 + phone, null));
+        startActivity(call);
 
     }
 
@@ -162,7 +221,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
     public void SendNetworkRequest(){
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
-        Call<List<EventDetail>> call = client.gettingEvent(20);
+        Call<List<EventDetail>> call = client.gettingEvent(event_id);
         call.enqueue(new Callback<List<EventDetail>>() {
             @Override
             public void onResponse(Call<List<EventDetail>> call, Response<List<EventDetail>> response) {
@@ -170,21 +229,27 @@ public class EventDetailActivity extends AppCompatActivity {
 
                     List<EventDetail> body = response.body();
 
+                    Picasso mPicasso = Picasso.with(EventDetailActivity.this);
 
                     assert body != null;
                     detailName.setText(body.get(0).getEventName());
-                    Picasso.with(EventDetailActivity.this).load(body.get(0).getMainImage()).into(detailImage);
+                    mPicasso.load(body.get(0).getMainImage()).into(detailImage);
                     detailDescription.setText(body.get(0).getDescription());
                     detailLocation.setText(body.get(0).getLocationName());
-                    detailTime.setText(body.get(0).getEventDate());
+                    detailTime.setText(body.get(0).getEventDate().substring(11,16));
+                    detailDate.setText(body.get(0).getEventDate().substring(0,10));
                     detailAttending.setText(body.get(0).getAttending().toString());
                     detailInterested.setText(body.get(0).getInterested().toString());
-                    detailContact.setText(String.format("%d",body.get(0).getContact()));
+                    detailContact.setText(0 + String.format("%d",body.get(0).getContact()));
 
                     likes = body.get(0).getInterested();
+                    liker = body.get(0).getInterested().toString();
                     title = body.get(0).getEventName();
+                    location = body.get(0).getLocationName();
+                    phone = String.format("%d",body.get(0).getContact());
                     lng = body.get(0).getLongitude();
                     lat = body.get(0).getLatitude();
+                    setTitle(title);
 
 
                 }else{
@@ -206,7 +271,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private void SendLike(Update like){
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
-        Call<ResponseBody> call = client.liking(1,like);
+        Call<ResponseBody> call = client.liking(event_id,like);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -252,7 +317,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private void SendUnlike(Update unlike){
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
-        Call<ResponseBody> call = client.unliking(1,unlike);
+        Call<ResponseBody> call = client.unliking(event_id,unlike);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -298,7 +363,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private void SendAttend(Update attend){
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
-        Call<ResponseBody> call = client.unliking(1,attend);
+        Call<ResponseBody> call = client.attending(event_id,attend);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -344,7 +409,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private void SendUnattend(Update unattend){
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
-        Call<ResponseBody> call = client.unliking(1,unattend);
+        Call<ResponseBody> call = client.unattending(event_id,unattend);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -387,18 +452,6 @@ public class EventDetailActivity extends AppCompatActivity {
 
 
     }
-
-
-    /*private void GetRequest(){
-
-
-        MySingleton.getInstance(this).addToRequestQueue(jsonArrayRequest);
-
-    }*/
-
-
-
-
 
 }
 

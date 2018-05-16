@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Update {
 
-    @SerializedName("Username")
+    @SerializedName("UserName")
     @Expose
     private String Username;
 

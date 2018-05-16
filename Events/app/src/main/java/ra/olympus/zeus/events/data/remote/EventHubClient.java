@@ -3,6 +3,8 @@ package ra.olympus.zeus.events.data.remote;
 import java.util.List;
 
 import okhttp3.ResponseBody;
+import ra.olympus.zeus.events.UserDetails;
+import ra.olympus.zeus.events.UserSignIn;
 import ra.olympus.zeus.events.data.models.CreateEvent;
 import ra.olympus.zeus.events.data.models.EventDetail;
 import ra.olympus.zeus.events.data.models.Update;
@@ -12,6 +14,9 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
+import ra.olympus.zeus.events.Search.Recycler.Implement.EventSearchClass;
+
 
 public interface EventHubClient {
     @POST("create-event")
@@ -26,11 +31,20 @@ public interface EventHubClient {
     @PUT("events/{eventid}/unlike")
     Call<ResponseBody> unliking(@Path("eventid") int id, @Body Update unlike);
 
-    @POST("events/{eventid}/like")
+    @PUT("events/{eventid}/attend")
     Call<ResponseBody> attending(@Path("eventid") int id, @Body Update attend);
 
-    @PUT("events/{eventid}/unlike")
+    @PUT("events/{eventid}/unattend")
     Call<ResponseBody> unattending(@Path("eventid") int id, @Body Update unattend);
+
+    @POST("signup")
+    Call<ResponseBody> sendUserDetails (@Body UserDetails user);
+
+    @POST("login")
+    Call<ResponseBody> sendSignInDetails (@Body UserSignIn user);
+
+    @GET("search/")
+    Call <List<EventSearchClass>> getSearchResults ( @Query("search_query") String name);
 
 
 

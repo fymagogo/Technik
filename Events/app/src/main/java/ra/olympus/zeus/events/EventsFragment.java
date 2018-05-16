@@ -47,6 +47,8 @@ public class EventsFragment extends Fragment {
             public void onClick(View v) {
                 Intent eventDetailIntent = new Intent(getContext(), EventDetailActivity.class);
                 //eventDetailIntent.putExtra("position_id", position_id);
+                int eventID = 1;
+                eventDetailIntent.putExtra("EventId",eventID);
                 startActivity(eventDetailIntent);
 
             }

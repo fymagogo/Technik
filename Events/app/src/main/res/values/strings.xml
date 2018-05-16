@@ -16,12 +16,13 @@
     <string name="node_posts">posts</string>
 
     <string-array name="category_types">
-        <item>Religion</item>
-        <item>Entertainment</item>
-        <item>Education</item>
-        <item>Sports</item>
-        <item>Lifestyle</item>
+        <item>Select Event Category</item>
         <item>Others</item>
+        <item>Sports</item>
+        <item>Religion</item>
+        <item>Education</item>
+        <item>Entertainment</item>
+        <item>Lifestyle</item>
     </string-array>
 
     <string-array name="event_menu">

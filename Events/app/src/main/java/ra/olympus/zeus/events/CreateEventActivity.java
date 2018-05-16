@@ -6,8 +6,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -87,18 +91,14 @@ public class CreateEventActivity extends AppCompatActivity {
     private FloatingActionButton changeEventFlyerFab;
     private Bitmap mSelectedBitmap;
     private Uri mSelectedUri;
-    private EditText eventName, eventDescription, eventContact;
+    private EditText eventName, eventDescription;
     private TextView eventTime, eventDate, eventLocation;
     private Button createEvent;
-    private ProgressBar mProgressBar;
     private Spinner spinner;
-    String locationName=" ";
     double eventLatitude;
     double eventLongitude;
-
-
-
-
+    private ProgressDialog progressDialog;
+    private String Username;
 
 
 
@@ -109,43 +109,34 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Create global configuration and initialize ImageLoader with this config
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-			.build();
+                .build();
         ImageLoader.getInstance().init(config);
 
 
         Toolbar toolbar = this.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //verifyPermissions();
 
-        if(getSupportActionBar() != null ){
+        if (getSupportActionBar() != null) {
             ActionBar bar = getSupportActionBar();
             bar.setTitle(R.string.text_create_event);
             bar.setDisplayShowHomeEnabled(true);
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
+        SharedPreferences sharedPref;
+        sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
+        Username = sharedPref.getString("Username",Username);
 
 
         eventFlyer = this.findViewById(R.id.event_flyer);
         changeEventFlyerFab = this.findViewById(R.id.change_event_flyer_fab);
         eventName = this.findViewById(R.id.event_name);
         eventDescription = this.findViewById(R.id.event_description);
-        eventContact = this.findViewById(R.id.contact_of_event);
         createEvent = this.findViewById(R.id.create_event_button);
         eventDate = this.findViewById(R.id.set_event_date_text_view);
         eventTime = this.findViewById(R.id.set_event_time_text_view);
         eventLocation = this.findViewById(R.id.enter_map_location);
         spinner = this.findViewById(R.id.events_category_spinner);
-
-
-
-
-
-
-
-
-
-
 
 
         //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -161,10 +152,9 @@ public class CreateEventActivity extends AppCompatActivity {
                 int month = cal.get(Calendar.MONTH);
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog= new DatePickerDialog(CreateEventActivity.this,dateSetter,year,month,day);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(CreateEventActivity.this, dateSetter, year, month, day);
                 //datePickerDialog.getWindow();
                 datePickerDialog.show();
-
 
 
                 //Toast.makeText(CreateEventActivity.this, "Set Date", Toast.LENGTH_SHORT).show();
@@ -172,7 +162,7 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        dateSetter = new DatePickerDialog.OnDateSetListener(){
+        dateSetter = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
@@ -183,19 +173,16 @@ public class CreateEventActivity extends AppCompatActivity {
         };
 
 
-         eventTime.setOnClickListener(new View.OnClickListener() {
+        eventTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int min = calendar.get(Calendar.MINUTE);
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this,timeSetter, hour, min, true);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this, timeSetter, hour, min, true);
                 timePickerDialog.show();
 
-
-                //Toast.makeText(CreateEventActivity.this, "Set Time", Toast.LENGTH_SHORT).show();
-                //TODO: Make a time picker to pick event time
             }
         });
 
@@ -208,8 +195,8 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         };
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplication(),R.array.category_types,R.layout.spinner_text_view);
-        Spinner spinner = this.findViewById(R.id.events_category_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplication(), R.array.category_types, R.layout.spinner_text_view);
+        final Spinner spinner = this.findViewById(R.id.events_category_spinner);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -237,28 +224,28 @@ public class CreateEventActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CreateEventActivity.this);
                 builder.setView(alertImageDialog);
 
-                final Dialog create =  builder.create();
+                final Dialog create = builder.create();
                 create.show();
 
                 GalleryImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         create.dismiss();
-                        Log.d(TAG,"accessing phone's gallery");
+                        Log.d(TAG, "accessing phone's gallery");
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         intent.setType("image/*");
-                        startActivityForResult(intent, PICKFILE_REQUEST_CODE );
+                        startActivityForResult(intent, PICKFILE_REQUEST_CODE);
                     }
                 });
 
-                TextView OpenCamera =  alertImageDialog.findViewById(R.id.OpenCamera);
+                TextView OpenCamera = alertImageDialog.findViewById(R.id.OpenCamera);
                 OpenCamera.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         create.dismiss();
-                        Log.d(TAG,"starting camera");
+                        Log.d(TAG, "starting camera");
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(intent, CAMERA_REQUEST_CODE );
+                        startActivityForResult(intent, CAMERA_REQUEST_CODE);
                     }
                 });
 
@@ -268,22 +255,49 @@ public class CreateEventActivity extends AppCompatActivity {
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: attempting to post...");
 
-                //we have a bitmap and no Uri
-                if(mSelectedBitmap != null && mSelectedUri == null){
-                    uploadNewPhoto(mSelectedBitmap);
-                }
-                //we have no bitmap and a uri
-                else if(mSelectedBitmap == null && mSelectedUri != null){
-                    uploadNewPhoto(mSelectedUri);
-                }
+
+                String name = eventName.getText().toString().trim();
+                String date = eventDate.getText().toString().trim();
+                String time = eventTime.getText().toString().trim();
+                String description = eventDescription.getText().toString().trim();
+                String location = eventLocation.getText().toString().trim();
+                long category = spinner.getSelectedItemId();
+
+
+                    if (name.length() == 0){
+                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                    }else if (description.length() == 0){
+                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                    }else if (location.length() == 0) {
+                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                    }else if (date.length() == 0){
+                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                    }else if (time.length() == 0){
+                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                    }else if (category == 0){
+                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                    }else {
+                        //we have a bitmap and no Uri
+                        if (mSelectedBitmap != null && mSelectedUri == null) {
+                            uploadNewPhoto(mSelectedBitmap);
+                        }
+                        //we have no bitmap and a uri
+                        else if (mSelectedBitmap == null && mSelectedUri != null) {
+                            uploadNewPhoto(mSelectedUri);
+                        }else{
+                            Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+
             }
+
         });
 
     }
 
-    public void pickerClick(View view){
+    public void pickerClick(View view) {
 
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
@@ -292,36 +306,31 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         } catch (GooglePlayServicesRepairableException e) {
-            Log.e(TAG,"onClick: GooglePlayServicesRepairableException " + e.getMessage());
+            Log.e(TAG, "onClick: GooglePlayServicesRepairableException " + e.getMessage());
         } catch (GooglePlayServicesNotAvailableException e) {
-            Log.e(TAG,"onClick: GooglePlayServicesNotAvailableException " + e.getMessage());
+            Log.e(TAG, "onClick: GooglePlayServicesNotAvailableException " + e.getMessage());
         }
     }
 
 
-
-
-    private void init(){
+    private void init() {
 
 
     }
 
 
+    private void uploadNewPhoto(Bitmap bitmap) {
+        Log.d(TAG, "uploadNewPhoto: uploading a new image bitmap to storage");
+        BackgroundImageResize resize = new BackgroundImageResize(bitmap);
+        Uri uri = null;
+        resize.execute(uri);
+    }
 
-
-        private void uploadNewPhoto (Bitmap bitmap){
-            Log.d(TAG, "uploadNewPhoto: uploading a new image bitmap to storage");
-            BackgroundImageResize resize = new BackgroundImageResize(bitmap);
-            Uri uri = null;
-            resize.execute(uri);
-        }
-
-        private void uploadNewPhoto (Uri imagePath){
-            Log.d(TAG, "uploadNewPhoto: uploading a new image uri to storage.");
-            BackgroundImageResize resize = new BackgroundImageResize(null);
-            resize.execute(imagePath);
-        }
-
+    private void uploadNewPhoto(Uri imagePath) {
+        Log.d(TAG, "uploadNewPhoto: uploading a new image uri to storage.");
+        BackgroundImageResize resize = new BackgroundImageResize(null);
+        resize.execute(imagePath);
+    }
 
 
     public class BackgroundImageResize extends AsyncTask<Uri, Integer, byte[]> {
@@ -329,7 +338,7 @@ public class CreateEventActivity extends AppCompatActivity {
         Bitmap mBitmap;
 
         public BackgroundImageResize(Bitmap bitmap) {
-            if(bitmap != null){
+            if (bitmap != null) {
                 this.mBitmap = bitmap;
             }
         }
@@ -345,16 +354,16 @@ public class CreateEventActivity extends AppCompatActivity {
         protected byte[] doInBackground(Uri... params) {
             Log.d(TAG, "doInBackground: started.");
 
-            if(mBitmap == null){
-                try{
-                    mBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),params[0]);
-                }catch (IOException e){
+            if (mBitmap == null) {
+                try {
+                    mBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), params[0]);
+                } catch (IOException e) {
                     Log.e(TAG, "doInBackground: IOException: " + e.getMessage());
                 }
             }
             byte[] bytes = null;
             bytes = getBytesFromBitmap(mBitmap, 100);
-            Log.d(TAG, "doInBackground: megabytes before compression: " + bytes.length / 1000000 );
+            Log.d(TAG, "doInBackground: megabytes before compression: " + bytes.length / 1000000);
             return bytes;
         }
 
@@ -367,14 +376,23 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-    private void executeUploadTask(){
+    private void executeUploadTask() {
+
+        progressDialog = new ProgressDialog(CreateEventActivity.this);
+        progressDialog.setMessage("Creating..."); // Setting Message
+        progressDialog.setTitle("Create Event"); // Setting Title
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Horizontal
+        progressDialog.show(); // Display Progress Dialog
+        Log.d(TAG, "onClick: attempting to post...");
+
+
         Toast.makeText(this, "Uploading image", Toast.LENGTH_SHORT).show();
 
 
         final String postId = FirebaseDatabase.getInstance().getReference().push().getKey();
 
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                .child("posts/users/" + postId+ "/post_image");
+                .child("posts/users/" + postId + "/post_image");
 
         UploadTask uploadTask = storageReference.putBytes(mUploadBytes);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -392,12 +410,12 @@ public class CreateEventActivity extends AppCompatActivity {
                 String EventName = eventName.getText().toString().trim();
                 long CategoryId = spinner.getSelectedItemId();
                 String MainImage = firebaseUri.toString().trim();
-                String EventDate = eventDate.getText().toString().trim();
+                String EventDate = eventDate.getText().toString().trim() + " " + eventTime.getText().toString().trim();
                 String Description = eventDescription.getText().toString().trim();
                 String LocationName = eventLocation.getText().toString().trim();
                 double Latitude = eventLatitude;
                 double Longitude = eventLongitude;
-                String Username = "Goat";
+
 
                 CreateEvent createEvent = new CreateEvent();
 
@@ -411,10 +429,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 createEvent.setLatitude(Latitude);
                 createEvent.setLongitude(Longitude);
 
-                for (int i = 0;i < 1 ; i++) {
+                for (int i = 0; i < 1; i++) {
 
                     SendNetworkRequest(createEvent);
                 }
+
 
 
             }
@@ -427,7 +446,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 double currentProgress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                if( currentProgress > (mProgress + 15)){
+                if (currentProgress > (mProgress + 15)) {
                     mProgress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                     Log.d(TAG, "onProgress: upload is " + mProgress + "& done");
 
@@ -435,14 +454,15 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
     }
-    public static byte[] getBytesFromBitmap(Bitmap bitmap, int quality){
+
+    public static byte[] getBytesFromBitmap(Bitmap bitmap, int quality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality,stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
         return stream.toByteArray();
     }
 
 
-    private void SendNetworkRequest(CreateEvent createEvent){
+    private void SendNetworkRequest(CreateEvent createEvent) {
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
         Call<ResponseBody> call = client.creatingEvent(createEvent);
 
@@ -450,28 +470,19 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                /*//we have a bitmap and no Uri
-                if(mSelectedBitmap != null && mSelectedUri == null){
-                    uploadNewPhoto(mSelectedBitmap);
-                }
-                //we have no bitmap and a uri
-                else if(mSelectedBitmap == null && mSelectedUri != null){
-                    uploadNewPhoto(mSelectedUri);
-                }*/
+                progressDialog.dismiss();
 
-                if(response.code()==200){
+                if (response.code() == 200) {
                     Toast.makeText(CreateEventActivity.this, "Event Created", Toast.LENGTH_SHORT).show();
+                    reset();
 
 
-
-
-                }
-                else{
+                } else {
                     //response code is supposed to come from the back end
-                    switch (response.code()){
+                    switch (response.code()) {
 
                         case 500:
-                            Toast.makeText(CreateEventActivity.this,"Event not created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreateEventActivity.this, "Event not created", Toast.LENGTH_SHORT).show();
 
                         default:
                             Toast.makeText(CreateEventActivity.this, "Server returned error: Unknown error", Toast.LENGTH_SHORT).show();
@@ -485,6 +496,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.dismiss();
 
                 Toast.makeText(CreateEventActivity.this, "You have no connection to server", Toast.LENGTH_SHORT).show();
 
@@ -492,67 +504,37 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
 
-
-
     }
 
 
-    public  Boolean isServicesOK(){
+    public Boolean isServicesOK() {
         Log.d(TAG, "isServicesOK(): checking google services version");
-        int available  = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(CreateEventActivity.this);
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(CreateEventActivity.this);
 
-        if(available == ConnectionResult.SUCCESS){
+        if (available == ConnectionResult.SUCCESS) {
             Log.d(TAG, "Google Play Services is working");
             return true;
-        }else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             Log.d(TAG, "isServicesOK: an error occurred but we can fix it");
-            Dialog dialog  = GoogleApiAvailability.getInstance().getErrorDialog(CreateEventActivity.this, available , ERROR_DIALOG_REQUEST);
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(CreateEventActivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
-        }else {
+        } else {
             Toast.makeText(this, "We cant connect map request", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
 
 
-
-
-   /* @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void verifyPermissions(){
-        Log.d(TAG,"verifyPermissions: asking user for permission");
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.CAMERA};
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[0]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[1]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[2]) == PackageManager.PERMISSION_GRANTED){
-
-        }else{
-            ActivityCompat.requestPermissions(CreateEventActivity.this,
-                    permissions,
-                    REQUEST_CODE);
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        verifyPermissions();
-    }
-*/
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         //Results when selecting new image from gallery
-        if (requestCode == PICKFILE_REQUEST_CODE ){
+        if (requestCode == PICKFILE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Uri selectedImageUri = data.getData();
                 mSelectedUri = selectedImageUri;
-                Log.d(TAG,"onActivityResult: " + selectedImageUri);
+                Log.d(TAG, "onActivityResult: " + selectedImageUri);
 
                 eventFlyer.setImageURI(selectedImageUri);
 
@@ -560,8 +542,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
         }
 
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            Log.d(TAG,"onActivityResult: DOne taking new photo");
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Log.d(TAG, "onActivityResult: DOne taking new photo");
             Bitmap bitmap;
             bitmap = (Bitmap) data.getExtras().get("data");
             mSelectedBitmap = bitmap;
@@ -571,7 +553,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode ==RESULT_OK) {
+            if (resultCode == RESULT_OK) {
 
                 Place place = PlacePicker.getPlace(this, data);
                 String toastMsg = String.format("%s", place.getName());
@@ -584,8 +566,29 @@ public class CreateEventActivity extends AppCompatActivity {
 
             }
         }
+
+
     }
 
+    public void reset(){
+        eventFlyer.setImageResource(R.mipmap.ic_blank);
+        eventName.setHint("Event Name");
+        eventDescription.setHint("Event Description");
+        eventDate.setHint("Enter Date");
+        eventTime.setHint("Enter Time");
+        eventLocation.setHint("Select Location");
+        spinner = this.findViewById(R.id.events_category_spinner);
+
+    }
+
+   /* public class UsernameReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+        }
+    }*/
 
 
 

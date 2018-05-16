@@ -1,31 +1,38 @@
 package ra.olympus.zeus.events;
 
-import android.Manifest;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ra.olympus.zeus.events.Search.Recycler.Implement.EventAdapter;
+import ra.olympus.zeus.events.Search.Recycler.Implement.EventSearchClass;
+import ra.olympus.zeus.events.Search.Recycler.Implement.SearchFragment;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
-    private static final int REQUEST_CODE = 2;
-    ViewPager viewPager;
+
 
     private String[] mPageTitles = {
             "Events",
@@ -45,8 +52,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences sharedPref;
+        sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
+
+
+        if (!(sharedPref.contains("Username") && sharedPref.contains("Password"))) {
+
+            Intent StartUpIntent = new Intent(getApplicationContext(), StartUpActivity.class);
+            startActivity(StartUpIntent);
+            finish();
+
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         final Toolbar toolbar = this.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,10 +84,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-       tabLayout = this.findViewById(R.id.tabs);
+        tabLayout = this.findViewById(R.id.tabs);
 
         ViewPager viewPager = this.findViewById(R.id.view_pager);
-        verifyPermissions();
 
         tabLayout.setupWithViewPager(viewPager);
 
@@ -127,7 +147,9 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager(viewPager);
 
         setUpWithTabIcons();
+
     }
+
 
     class FragmentAdapter extends FragmentPagerAdapter {
 
@@ -174,32 +196,62 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(3).setIcon(mTabIcons[3]);
     }
 
-    private void verifyPermissions(){
-        Log.d(TAG,"verifyPermissions: asking user for permission");
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.CAMERA};
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[0]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[1]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[2]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[3]) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[4]) == PackageManager.PERMISSION_GRANTED){
-
-
-        }else{
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    permissions,
-                    REQUEST_CODE);
-        }
-
-    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        verifyPermissions();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+
+
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+
+
+        return true;
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_search:
+
+                break;
+
+            case R.id.action_settings:
+                break;
+
+
+            case R.id.account_details:
+                break;
+
+            case R.id.account_subscription:
+                break;
+
+            case R.id.account_logout:
+                SharedPreferences sharedPref;
+                sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
+
+                sharedPref.edit().clear().apply();
+
+                Intent StartUpIntent = new Intent(getApplicationContext(), StartUpActivity.class);
+                StartUpIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                startActivity(StartUpIntent);
+                finish();
+
+                break;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
 }
