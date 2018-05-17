@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Account">
+
+<!--Same username and password key values as used in the shared preferences file-->
+
+    <Preference
+         android:key="Username"
+         android:title="@string/Change_Username">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="ra.olympus.zeus.events"
+            android:targetClass="ra.olympus.zeus.events.Settings.ChangeUsernameActivity"/>
+    </Preference>
+
+<!-- The key attribute is how this preference must be stored in the shared preferences file-->
+    <Preference
+        android:key="Password"
+        android:title="@string/Change_Password">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="ra.olympus.zeus.events"
+            android:targetClass="ra.olympus.zeus.events.Settings.ChangePasswordActivity"/>
+    </Preference>
+
+  <!--  <Preference
+        android:title="@string/Logout"
+        android:dialogTitle="Logout "
+        android:dialogMessage="Do you want to logout of this account?">
+    </Preference>-->
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Notifications">
+
+    <SwitchPreference
+        android:key="enable_notifications"
+        android:title="@string/Enable_notifications"
+        android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+    <Preference
+        android:title="@string/About"
+        android:summary="Nothing so far"/>
+
+
+
+
+</PreferenceScreen>
