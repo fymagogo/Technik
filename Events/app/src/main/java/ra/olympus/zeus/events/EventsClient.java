@@ -22,9 +22,14 @@ public interface EventsClient {
     @GET("myattending/{username}")
     Call<List<Event>>getAttendingEvents(@Path("username") String username);
 
-    @GET("events/categories/{categoryName}")
-    Call<List<Event>> getEventsByCategory(@Path("categoryName") String categoryName);
+    @GET("events/filter/{categoryID}")
+    Call<List<Event>> getEventsByCategory(@Path("categoryID") int categoryID);
+//
+//    @POST("settings/addCategory/{username}/{categoryName}")
+//    Call<Subscription> addSubscription(@Body Subscription subscription);
 
-    @POST("/settings/addCategory/{username}/{categoryName}")
-    Call<Subscription> addSubscription(@Body Subscription subscription);
+    //@POST("events/:eventId/like")
+    //Call<Subscription> addLike(@Body Subscription subscription);
+
+
 }

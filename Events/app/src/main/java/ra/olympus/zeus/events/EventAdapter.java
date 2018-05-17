@@ -33,6 +33,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             return holder;
         }
 
+
         @Override
         public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
             Event event = this.mEventList.get(position);
@@ -50,6 +51,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         static class EventViewHolder extends RecyclerView.ViewHolder{
 
             private ImageView mEventImageView;
+
             private TextView mEventNameTextView;
             private TextView mEventDateTextView;
             private Context mContext;

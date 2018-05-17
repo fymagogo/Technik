@@ -31,6 +31,8 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     @Override
     public void onBindViewHolder(SubscriptionViewHolder holder, int position) {
+        Subscription subscription = mSubscriptionList.get(position);
+
         holder.mAddSubscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -26,6 +26,9 @@ public class CategoriesFragment extends Fragment {
 
     Retrofit mRetrofitBuilder;
     private Call<List<Event>> mEventsCategoryCall;
+    private List<Event> mEventList;
+    private EventAdapter adapter1;
+    private android.support.v7.widget.RecyclerView eventRecyclerView;
 
     public CategoriesFragment() {
         // Required empty public constructor
@@ -49,6 +52,8 @@ public class CategoriesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+         mEventList = new java.util.ArrayList<>();
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_categories, container, false);
 
@@ -57,38 +62,47 @@ public class CategoriesFragment extends Fragment {
         final EventsClient client = mRetrofitBuilder.create(EventsClient.class);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.category_types,android.R.layout.simple_expandable_list_item_1);
-        Spinner spinner = view.findViewById(R.id.category_types_spinner);
+        Spinner spinner = view.findViewById(R.id.events_category_spinner);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch(position){
-                    case 0:
-                        mEventsCategoryCall = client.getEventsByCategory("Religion");
-                        requestEventsByCategory(mEventsCategoryCall);
-                        break;
-                    case 1:
-                        mEventsCategoryCall = client.getEventsByCategory("Entertainment");
-                        requestEventsByCategory(mEventsCategoryCall);
-                        break;
-                    case 2:
-                        mEventsCategoryCall = client.getEventsByCategory("Education");
-                        requestEventsByCategory(mEventsCategoryCall);
-                        break;
-                    case 3:
-                        mEventsCategoryCall = client.getEventsByCategory("Sports");
-                        requestEventsByCategory(mEventsCategoryCall);
-                        break;
-                    case 4:
-                        mEventsCategoryCall = client.getEventsByCategory("Lifestyle");
-                        requestEventsByCategory(mEventsCategoryCall);
-                        break;
-                };
+//                switch(position){
+//                    case 0: //religion
+ //                      mEventsCategoryCall = client.getEventsByCategory(3);
+//                        requestEventsByCategory(mEventsCategoryCall);
+//                        break;
+//                    case 1: //entertainment
+//                        mEventsCategoryCall = client.getEventsByCategory("Entertainment");
+//                        requestEventsByCategory(mEventsCategoryCall);
+//                        break;
+//                    case 2: //education
+//                        mEventsCategoryCall = client.getEventsByCategory(4);
+//                        requestEventsByCategory(mEventsCategoryCall);
+//                        break;
+//                    case 3: //sports
+//                        mEventsCategoryCall = client.getEventsByCategory(2);
+//                        requestEventsByCategory(mEventsCategoryCall);
+//                        break;
+//                    case 4: //lifestyle
+//                        mEventsCategoryCall = client.getEventsByCategory("Lifestyle");
+//                        requestEventsByCategory(mEventsCategoryCall);
+//                        break;
+
+  //                  case 5: //others
+//                        mEventsCategoryCall = client.getEventsByCategory(1);
+//                        requestEventsByCategory(mEventsCategoryCall);
+//                        break;
+
+
+//                };
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+//                mEventsCategoryCall = client.getEventsByCategory("Religion");
+//              requestEventsByCategory(mEventsCategoryCall);
 
             }
         });
@@ -97,29 +111,31 @@ public class CategoriesFragment extends Fragment {
         return view;
     }
 
-    private void requestEventsByCategory(Call<List<Event>> eventsCategoryCall){
-        eventsCategoryCall.enqueue(new Callback<List<Event>>() {
-            @Override
-            public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
-                if (response.isSuccessful()) {
-                    List<Event> events = response.body();
-                    mEventAdapter = new EventAdapter(events);
-                    mEventAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(getContext(), "Couldn't retrieve events", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Event>> call, Throwable t) {
-                Toast.makeText(getContext(), "Couldn't connect to server", Toast.LENGTH_SHORT).show();
-
-
-            }
-        });
-
-
-
-    };
+//    private void requestEventsByCategory(Call<List<Event>> eventsCategoryCall){
+//        eventsCategoryCall.enqueue(new Callback<List<Event>>() {
+//            @Override
+//            public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
+//                if (response.isSuccessful()) {
+//                    List<Event> events = response.body();
+//                    mEventList.addAll(events);
+//                    adapter1 = new EventAdapter(mEventList);
+//                    eventRecyclerView.setAdapter(adapter1);
+//                    adapter1.notifyDataSetChanged();
+//                } else {
+//                    Toast.makeText(getContext(), "Couldn't retrieve events", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Event>> call, Throwable t) {
+//                Toast.makeText(getContext(), "Couldn't connect to server", Toast.LENGTH_SHORT).show();
+//
+//
+//            }
+//        });
+//
+//
+//
+//    };
 
 }

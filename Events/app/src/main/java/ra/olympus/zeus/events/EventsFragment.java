@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -30,6 +31,9 @@ public class EventsFragment extends Fragment {
 
     Retrofit mRetrofitBuilder;
     private Call<List<Event>> mEventsCall;
+    private List<Event> mEventList;
+    private EventAdapter adapter1;
+    private RecyclerView eventRecyclerView;
 
     public EventsFragment() {
         // Required empty public constructor
@@ -57,27 +61,17 @@ public class EventsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        mEventList = new ArrayList<>();
+
         View view = inflater.inflate(R.layout.fragment_events, container, false);
+        eventRecyclerView = view.findViewById(R.id.event_recycler);
+        eventRecyclerView.setHasFixedSize(true);
+        eventRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+//        adapter1 = new EventAdapter(DummyData.getData());
 
         mRetrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
 
         final EventsClient client = mRetrofitBuilder.create(EventsClient.class);
-
-        CardView layout = view.findViewById(R.id.container);
-
-        RecyclerView eventRecyclerView = view.findViewById(R.id.event_recycler);
-        eventRecyclerView.setHasFixedSize(true);
-        eventRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        EventAdapter adapter1 = new EventAdapter(DummyData.getData());
-        eventRecyclerView.setAdapter(adapter1);
-
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent eventDetailIntent = new Intent(getContext(), EventDetailActivity.class);
-                startActivity(eventDetailIntent);
-            }
-        });
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.event_menu, android.R.layout.simple_expandable_list_item_1);
         Spinner spinner = view.findViewById(R.id.events_menu_spinner);
@@ -89,22 +83,18 @@ public class EventsFragment extends Fragment {
                     case 0:
                         mEventsCall = client.getAllEvents();
                         requestEvents(mEventsCall);
-
                         break;
                     case 1:
                         mEventsCall = client.getMyEvents("");
                         requestEvents(mEventsCall);
-
                         break;
                     case 2:
                         mEventsCall = client.getInterestedEvents("");
                         requestEvents(mEventsCall);
-
                         break;
                     case 3:
                         mEventsCall = client.getAttendingEvents("");
                         requestEvents(mEventsCall);
-
                         break;
                 }
             }
@@ -116,6 +106,9 @@ public class EventsFragment extends Fragment {
             }
         });
         spinner.setAdapter(adapter);
+        mEventsCall = client.getAllEvents();
+        requestEvents(mEventsCall);
+
         return view;
     }
 
@@ -124,13 +117,17 @@ public class EventsFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
                 if (response.isSuccessful()) {
+                    //Toast.makeText(getContext(), "Events Fragment", Toast.LENGTH_SHORT).show();
                     List<Event> events = response.body();
-                    mEventAdapter = new EventAdapter(events);
-                    mEventAdapter.notifyDataSetChanged();
+                    mEventList.addAll(events);
+                    adapter1 = new EventAdapter(mEventList);
+                    eventRecyclerView.setAdapter(adapter1);
+                    adapter1.notifyDataSetChanged();
+//                    mEventAdapter = new EventAdapter(events);
+//                    mEventAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "Couldn't retrieve events", Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override
