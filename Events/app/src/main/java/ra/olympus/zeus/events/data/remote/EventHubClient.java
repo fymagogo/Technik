@@ -46,6 +46,9 @@ public interface EventHubClient {
     @GET("search/")
     Call <List<EventSearchClass>> getSearchResults ( @Query("search_query") String name);
 
+    @PUT(/*path goes here*/)
+    Call<ResponseBody> changepassword (@Body String changepassword);
+
 
 
 

@@ -32,7 +32,6 @@ import okhttp3.ResponseBody;
 import ra.olympus.zeus.events.data.models.EventDetail;
 import ra.olympus.zeus.events.data.models.Update;
 import ra.olympus.zeus.events.data.remote.EventHubClient;
-import ra.olympus.zeus.events.data.remote.MySingleton;
 import ra.olympus.zeus.events.data.remote.ServiceGenerator;
 import retrofit2.Call;
 import retrofit2.Callback;

@@ -14,9 +14,9 @@ import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import okhttp3.ResponseBody;
-import ra.olympus.zeus.events.EventHubClient;
 import ra.olympus.zeus.events.R;
-import ra.olympus.zeus.events.ServiceGenerator;
+import ra.olympus.zeus.events.data.remote.EventHubClient;
+import ra.olympus.zeus.events.data.remote.ServiceGenerator;
 import retrofit2.Callback;
 import retrofit2.Response;
 
