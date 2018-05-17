@@ -27,16 +27,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment {
 
 
 
-       /* change_password.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent ChangePasswordIntent = new Intent(getActivity().getApplicationContext(),ChangePasswordActivity.class);
-                startActivity(ChangePasswordIntent);
 
-
-                return true;
-            }
-        });*/
 
     }
 

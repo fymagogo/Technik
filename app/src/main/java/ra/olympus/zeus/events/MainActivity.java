@@ -217,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(false);
 
 
+
         return true;
     }
 

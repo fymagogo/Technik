@@ -87,8 +87,10 @@ public class SearchFragment extends Fragment{
             @Override
             public void onResponse(Call<List<EventSearchClass>> call, Response<List<EventSearchClass>> response) {
                 if(response.isSuccessful()){
+                    eventSearchClassList.clear();
                     eventSearchClassList.addAll(response.body());
                     eventAdapter.notifyDataSetChanged();
+
 
                 }
 
@@ -138,7 +140,6 @@ public class SearchFragment extends Fragment{
             @Override
             public void onClick(View view, int position) {
                 //Intent to transport user to the event selected
-
                 EventSearchClass eventSearchClass = eventSearchClassList.get(position);
                 Toast.makeText(getContext(),eventSearchClass.getEventname()+" is Selected!", Toast.LENGTH_SHORT).show();
             }
@@ -154,6 +155,8 @@ public class SearchFragment extends Fragment{
 
         return itemView;
     }
+
+
 
 
     @Override
@@ -175,6 +178,9 @@ public class SearchFragment extends Fragment{
 
             @Override
             public boolean onQueryTextChange(String s) {
+                eventSearchClassList.clear();
+                eventAdapter.notifyDataSetChanged();
+
                 return true;
             }
         });

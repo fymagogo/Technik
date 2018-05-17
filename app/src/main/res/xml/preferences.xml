@@ -28,11 +28,11 @@
             android:targetClass="ra.olympus.zeus.events.Settings.ChangePasswordActivity"/>
     </Preference>
 
-    <Preference
+  <!--  <Preference
         android:title="@string/Logout"
         android:dialogTitle="Logout "
         android:dialogMessage="Do you want to logout of this account?">
-    </Preference>
+    </Preference>-->
 
 
     </PreferenceCategory>
