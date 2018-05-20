@@ -1,7 +1,9 @@
 package ra.olympus.zeus.events;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -27,6 +30,8 @@ import java.util.List;
 import ra.olympus.zeus.events.Search.Recycler.Implement.EventAdapter;
 import ra.olympus.zeus.events.Search.Recycler.Implement.EventSearchClass;
 import ra.olympus.zeus.events.Search.Recycler.Implement.SearchFragment;
+import ra.olympus.zeus.events.Settings.SettingsActivity;
+import ra.olympus.zeus.events.Settings.SettingsPreferenceFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -206,10 +211,12 @@ public class MainActivity extends AppCompatActivity {
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setQueryHint("Search Event");
 
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
+
 
 
         return true;
@@ -225,6 +232,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.action_settings:
+
+                Intent SettingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(SettingsIntent);
                 break;
 
 
@@ -235,16 +245,25 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.account_logout:
-                SharedPreferences sharedPref;
-                sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
 
-                sharedPref.edit().clear().apply();
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Logout")
+                        .setMessage("Would you like to logout?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                SharedPreferences sharedPref;
+                                sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
 
-                Intent StartUpIntent = new Intent(getApplicationContext(), StartUpActivity.class);
-                StartUpIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                startActivity(StartUpIntent);
-                finish();
+                                sharedPref.edit().clear().apply();
 
+                                Intent StartUpIntent = new Intent(getApplicationContext(), StartUpActivity.class);
+                                startActivity(StartUpIntent);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("No", null )
+                        .show();
                 break;
 
         }

@@ -6,8 +6,12 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -48,6 +52,25 @@ public class SignUpActivity extends AppCompatActivity {
         final EditText Email = (EditText) findViewById(R.id.email_of_user_edit_text_sign_up);
         final EditText Password = (EditText) findViewById(R.id.password_of_user_edit_text_sign_up);
         final EditText confirmPassword = (EditText) findViewById(R.id.confirm_password_edit_text);
+        CheckBox showpassword = findViewById(R.id.show_password_check_box);
+
+
+        showpassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(!isChecked){
+                    Password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    confirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }else{
+                    Password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    confirmPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }
+
+                }
+            }
+        );
+
+
 
 
 
@@ -82,6 +105,10 @@ public class SignUpActivity extends AppCompatActivity {
         animationDrawable.start();
 
     }
+
+
+
+
 
     private void SendNetworkRequest(final UserDetails user){
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);

@@ -1,6 +1,8 @@
 package ra.olympus.zeus.events;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -11,6 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +34,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import okhttp3.ResponseBody;
+import ra.olympus.zeus.events.Settings.SettingsActivity;
 import ra.olympus.zeus.events.data.models.EventDetail;
 import ra.olympus.zeus.events.data.models.Update;
 import ra.olympus.zeus.events.data.remote.EventHubClient;
@@ -125,6 +131,50 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu_2, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.edit_event:
+                Intent EditEvent = new Intent(EventDetailActivity.this,EditEventActivity.class);
+                EditEvent.putExtra("EventId",event_id);
+                startActivity(EditEvent);
+
+                break;
+
+            case R.id.delete_event:
+
+                new AlertDialog.Builder(EventDetailActivity.this)
+                        .setTitle("Delete Event")
+                        .setMessage("Are you sure you want to delete the event?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                SharedPreferences sharedPref;
+                                sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
+
+                                sharedPref.edit().clear().apply();
+
+                                Delete();
+                            }
+                        })
+                        .setNegativeButton("No", null )
+                        .show();
+                break;
+
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public void attend(View view){
 
 
@@ -195,6 +245,12 @@ public class EventDetailActivity extends AppCompatActivity {
 
             /*detailInterested.setText(likes - 1);*/
         }
+    }
+
+    public void editor(View view){
+        Intent intent = new Intent(EventDetailActivity.this,EventDetailActivity.class);
+        intent.putExtra("EventId",event_id);
+        startActivity(intent);
     }
 
     public void locator(View view){
@@ -427,7 +483,7 @@ public class EventDetailActivity extends AppCompatActivity {
                     switch (response.code()){
 
                         case 500:
-                            Toast.makeText(EventDetailActivity.this,"Event not created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EventDetailActivity.this,"Event not unattended", Toast.LENGTH_SHORT).show();
 
                         default:
                             Toast.makeText(EventDetailActivity.this, "Server returned error: Unknown error", Toast.LENGTH_SHORT).show();
@@ -447,7 +503,44 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
+    }
 
+    private void Delete(){
+        EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
+        Call<ResponseBody> call = client.deleteEvent(Username,event_id);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+
+                if(response.code()==200){
+                    Toast.makeText(EventDetailActivity.this, "Event deleted", Toast.LENGTH_SHORT).show();
+                    Intent MainActivityintent = new Intent(EventDetailActivity.this,MainActivity.class);
+                    startActivity(MainActivityintent);
+
+                }
+                else{
+                    //response code is supposed to come from the back end
+                    switch (response.code()){
+
+                        case 500:
+                            Toast.makeText(EventDetailActivity.this,"Event not Deleted", Toast.LENGTH_SHORT).show();
+
+                        default:
+                            Toast.makeText(EventDetailActivity.this, "Server returned error: Unknown error", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                Toast.makeText(EventDetailActivity.this, "You have no connection to server", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
 
     }

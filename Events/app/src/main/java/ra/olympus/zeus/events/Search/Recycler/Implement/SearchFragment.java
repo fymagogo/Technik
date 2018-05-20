@@ -87,8 +87,9 @@ public class SearchFragment extends Fragment{
 
     private void doMySearch(String query) {
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
+        int id = 0;
 
-        Call<List<EventSearchClass>> call = client.getSearchResults(query);
+        Call<List<EventSearchClass>> call = client.getSearchResults(query,id);
         call.enqueue(new Callback<List<EventSearchClass>>() {
             @Override
             public void onResponse(Call<List<EventSearchClass>> call, Response<List<EventSearchClass>> response) {

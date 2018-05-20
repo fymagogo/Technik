@@ -10,99 +10,136 @@
         android:layout_width="match_parent"
         android:minHeight="?actionBarSize"
         android:background="@color/colorPrimaryDark"
-        android:id="@+id/change_username_toolbar"
+        android:id="@+id/change_profile_details_toolbar"
         android:layout_height="wrap_content"/>
 
     <FrameLayout
-        app:layout_constraintTop_toBottomOf="@+id/change_username_toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/change_profile_details_toolbar"
         android:id="@+id/frame_layout_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-
     <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/change_username_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_margin="16dp"
-    android:orientation="vertical">
-
-
-
-    <android.support.design.widget.TextInputLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/edit_profile_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="130dp">
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/current_username"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:inputType="text"
-            android:padding="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:hint="Current Username"
-            />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_marginTop="130dp">
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/current_first_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:inputType="text"
+                android:padding="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:hint="Current FirstName"
+                />
+        </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/new_username"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:inputType="text"
-            android:padding="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:hint="New Username"/>
+            android:layout_marginTop="5dp">
 
-    </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/current_last_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:inputType="text"
+                android:padding="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:hint="Current LastName"
+                />
+        </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/confirm_username"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:inputType="text"
-            android:padding="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:hint="Confirm Username"/>
+            android:layout_marginTop="5dp">
 
-    </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/current_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:inputType="text"
+                android:padding="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:hint="Current UserName"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/current_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:inputType="textEmailAddress"
+                android:padding="8dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:hint="Current Email"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
 
 
-    <Button
-        android:id="@+id/change_username_button"
-        android:layout_width="150dp"
-        android:layout_height="35dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="35dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/flat_button_background"
-        android:elevation="6dp"
-        android:textColor="@color/colorAccent"
-        android:text="Change Username"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/current_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:inputType="phone"
+                android:padding="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:hint="Current PhoneNumber"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/submit_edit_profile"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/flat_button_background"
+            android:elevation="6dp"
+            android:textColor="@color/colorAccent"
+            android:text="Change Username"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
 
-</LinearLayout>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

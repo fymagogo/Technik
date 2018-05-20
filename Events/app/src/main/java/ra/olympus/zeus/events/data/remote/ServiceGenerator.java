@@ -22,6 +22,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceGenerator {
 
     private static Context mCtx;
+//    private static Cache cache = new Cache(new File(mCtx.getCacheDir(),
+//                    "apiResponses"), 10 * 1024 * 1024);
 
 
     private static class ResponseCachingInterceptor implements Interceptor {
@@ -31,11 +33,12 @@ public class ServiceGenerator {
         public Response intercept(Chain chain) throws IOException {
 
             Response response = chain.proceed(chain.request());
+
             return response.newBuilder()
-                    .removeHeader("Pragma")
+                    /*.removeHeader("Pragma")
                     .removeHeader("Access-Control-Allow-Origin")
                     .removeHeader("Vary")
-                    .removeHeader("Cache-Control")
+                    .removeHeader("Cache-Control")*/
                     .header("Cache-Control", "public, max-age=300")
                     .build();
         }
@@ -47,18 +50,22 @@ public class ServiceGenerator {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            NetworkInfo networkInfo =((ConnectivityManager)
 
-                    (mCtx.getSystemService(Context.CONNECTIVITY_SERVICE))).getActiveNetworkInfo();
-            if (networkInfo==null) {
-                request = request.newBuilder()
-                        .removeHeader("Pragma")
-                        .removeHeader("Access-Control-Allow-Origin")
-                        .removeHeader("Vary")
-                        .removeHeader("Cache-Control")
-                        .header("Cache-Control",
-                                "public, only-if-cached, max-stale= 604800")
-                        .build();
+            if (request.method().equals("GET")) {
+                NetworkInfo networkInfo = ((ConnectivityManager)
+
+                        (mCtx.getSystemService(Context.CONNECTIVITY_SERVICE))).getActiveNetworkInfo();
+                if (networkInfo == null) {
+                    request = request.newBuilder()
+                            /*.removeHeader("Pragma")
+                            .removeHeader("Access-Control-Allow-Origin")
+                            .removeHeader("Vary")
+                            .removeHeader("Cache-Control")*/
+                            .header("Cache-Control",
+                                    "public, only-if-cached, max-stale= 604800")
+                            .build();
+                }
+//                return chain.proceed(request);
             }
             return chain.proceed(request);
         }
@@ -68,16 +75,16 @@ public class ServiceGenerator {
 
     //creating an okHttp client
     static OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
-            /*.addNetworkInterceptor(new ResponseCachingInterceptor())
-            .addInterceptor(new OfflineResponseCacheInterceptor())*/
-            .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            /*.cache(new Cache(new File(mCtx.getCacheDir(),
-                    "apiResponses"), 10 * 1024 * 1024))*/;
+           // .addNetworkInterceptor(new ResponseCachingInterceptor())
+//           .cache(cache)
+            .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+//            .addInterceptor(new OfflineResponseCacheInterceptor());
+
 
 
 
      static Retrofit.Builder builder = new Retrofit.Builder()
-            .baseUrl("http://192.168.43.43:8000/")
+            .baseUrl("http://192.168.43.188:8000/")
             .addConverterFactory(GsonConverterFactory.create());
 
 

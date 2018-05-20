@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 
 import okhttp3.ResponseBody;
 import ra.olympus.zeus.events.R;
+import ra.olympus.zeus.events.data.models.ChangePassword;
 import ra.olympus.zeus.events.data.remote.EventHubClient;
 import ra.olympus.zeus.events.data.remote.ServiceGenerator;
 import retrofit2.Callback;
@@ -30,13 +31,18 @@ public class ChangePasswordActivity extends AppCompatActivity {
     EditText current_password;
     EditText new_password;
     EditText confirm_password;
+    String Username;
+    SharedPreferences sharedPref;
+    ChangePassword change;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_password);
 
-        Toolbar toolbar = findViewById(R.id.change_password_toolbar);
+        final Toolbar toolbar = findViewById(R.id.change_password_toolbar);
         toolbar.setTitle("Change Password");
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorAccent));
         setSupportActionBar(toolbar);
@@ -47,17 +53,23 @@ public class ChangePasswordActivity extends AppCompatActivity {
         new_password = (EditText) findViewById(R.id.new_password);
         confirm_password = (EditText) findViewById(R.id.change_password_confirm_password);
 
+        sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
+        Username = sharedPref.getString("Username",Username);
+
+
+
         Button changePassword = this.findViewById(R.id.change_password_button);
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sharedPref;
 
-                sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
+                change  = new ChangePassword();
+                change.setOldPassword(current_password.getText().toString());
+                change.setNewPassword(new_password.getText().toString());
 
                 String password = sharedPref.getString("Password", null);
 
-                if (!new_password.equals(confirm_password)) {
+                if (!new_password.getText().toString().equals(confirm_password.getText().toString())) {
 
                     Toast.makeText(ChangePasswordActivity.this, "Confirm password does not match new password field", Toast.LENGTH_SHORT).show();
                 }
@@ -65,14 +77,15 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 if (!current_password.getText().toString().equals(password)) {
                     Toast.makeText(ChangePasswordActivity.this, "Current password does not match this account", Toast.LENGTH_SHORT).show();
 
-
                 }
 
                 if (new_password.equals(confirm_password) && current_password.getText().toString().equals(password)) {
                     //Make call to the backend to change the password in the database and return the user to the setting screen
+                    Toast.makeText(ChangePasswordActivity.this,"This matches", Toast.LENGTH_SHORT).show();
 
-                    changeMyPassword(new_password.getText().toString());
-
+                }else{
+                    Toast.makeText(ChangePasswordActivity.this,"This matches else", Toast.LENGTH_SHORT).show();
+                    changeMyPassword(change);
 
                 }
 
@@ -93,11 +106,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     }
 
-    private void changeMyPassword(final String new_password){
+
+
+    private void changeMyPassword(ChangePassword change){
 
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
-
-        retrofit2.Call<ResponseBody> call = client.changepassword(new_password);
+        retrofit2.Call<ResponseBody> call = client.changepassword(Username,change);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -108,7 +122,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
                     sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN",Context.MODE_PRIVATE);
 
-                    sharedPref.edit().putString("Password",new_password).apply();
+                    sharedPref.edit().putString("Password",new_password.toString()).apply();
 
                     Toast.makeText(ChangePasswordActivity.this, "Your password has been changed",Toast.LENGTH_SHORT).show();
 
@@ -120,9 +134,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 Toast.makeText(ChangePasswordActivity.this, "You have no connection",Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
 
 
     }

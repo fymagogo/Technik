@@ -1,30 +1,23 @@
 package ra.olympus.zeus.events;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,11 +28,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -55,15 +48,16 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 
 import okhttp3.ResponseBody;
-
 import ra.olympus.zeus.events.data.models.CreateEvent;
+import ra.olympus.zeus.events.data.models.EventDetail;
 import ra.olympus.zeus.events.data.remote.EventHubClient;
 import ra.olympus.zeus.events.data.remote.ServiceGenerator;
 import retrofit2.Call;
@@ -71,10 +65,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class CreateEventActivity extends AppCompatActivity {
+public class EditEventActivity extends AppCompatActivity {
 
     //google play services
-    private static final String TAG = "CreateEventActivity";
+    private static final String TAG = "EditEventActivity";
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private static final int REQUEST_CODE = 2;
     private static final int PLACE_PICKER_REQUEST = 67;
@@ -88,24 +82,25 @@ public class CreateEventActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener dateSetter;
     private TimePickerDialog.OnTimeSetListener timeSetter;
     private ImageView eventFlyer;
-    private FloatingActionButton changeEventFlyerFab;
+    private FloatingActionButton editEventFlyerFab;
     private Bitmap mSelectedBitmap;
     private Uri mSelectedUri;
     private EditText eventName, eventDescription;
     private TextView eventTime, eventDate, eventLocation;
-    private Button createEvent;
+    private Button editEvent;
     private Spinner spinner;
     double eventLatitude;
     double eventLongitude;
     private ProgressDialog progressDialog;
     private String Username;
+    private int event_id;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_event);
+        setContentView(R.layout.activity_edit_event);
 
         // Create global configuration and initialize ImageLoader with this config
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
@@ -118,7 +113,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             ActionBar bar = getSupportActionBar();
-            bar.setTitle(R.string.text_create_event);
             bar.setDisplayShowHomeEnabled(true);
             bar.setDisplayHomeAsUpEnabled(true);
         }
@@ -127,16 +121,21 @@ public class CreateEventActivity extends AppCompatActivity {
         sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
         Username = sharedPref.getString("Username",Username);
 
+        Bundle id = getIntent().getExtras();
+        event_id = id.getInt("EventId");
 
-        eventFlyer = this.findViewById(R.id.event_flyer);
-        changeEventFlyerFab = this.findViewById(R.id.change_event_flyer_fab);
-        eventName = this.findViewById(R.id.event_name);
-        eventDescription = this.findViewById(R.id.event_description);
-        createEvent = this.findViewById(R.id.create_event_button);
-        eventDate = this.findViewById(R.id.set_event_date_text_view);
-        eventTime = this.findViewById(R.id.set_event_time_text_view);
-        eventLocation = this.findViewById(R.id.enter_map_location);
-        spinner = this.findViewById(R.id.events_category_spinner);
+        GetEvent();
+
+
+        eventFlyer = this.findViewById(R.id.edit_event_flyer);
+        editEventFlyerFab = this.findViewById(R.id.edit_event_flyer_fab);
+        eventName = this.findViewById(R.id.edit_event_name);
+        eventDescription = this.findViewById(R.id.edit_event_description);
+        editEvent = this.findViewById(R.id.edit_event_button);
+        eventDate = this.findViewById(R.id.edit_set_event_date_text_view);
+        eventTime = this.findViewById(R.id.edit_set_event_time_text_view);
+        eventLocation = this.findViewById(R.id.edit_enter_map_location);
+        spinner = this.findViewById(R.id.edit_events_category_spinner);
 
 
         //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -152,7 +151,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 int month = cal.get(Calendar.MONTH);
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CreateEventActivity.this, dateSetter, year, month, day);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(EditEventActivity.this, dateSetter, year, month, day);
                 //datePickerDialog.getWindow();
                 datePickerDialog.show();
 
@@ -180,7 +179,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int min = calendar.get(Calendar.MINUTE);
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this, timeSetter, hour, min, true);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(EditEventActivity.this, timeSetter, hour, min, true);
                 timePickerDialog.show();
 
             }
@@ -214,14 +213,14 @@ public class CreateEventActivity extends AppCompatActivity {
             init();
         }*/
 
-        changeEventFlyerFab.setOnClickListener(new View.OnClickListener() {
+        editEventFlyerFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                View alertImageDialog = LayoutInflater.from(CreateEventActivity.this).inflate(R.layout.dialog_select_photo, null);
+                View alertImageDialog = LayoutInflater.from(EditEventActivity.this).inflate(R.layout.dialog_select_photo, null);
                 TextView GalleryImage = alertImageDialog.findViewById(R.id.GalleryImage);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(CreateEventActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditEventActivity.this);
                 builder.setView(alertImageDialog);
 
                 final Dialog create = builder.create();
@@ -252,7 +251,7 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        createEvent.setOnClickListener(new View.OnClickListener() {
+        editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -266,17 +265,17 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
                     if (name.length() == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
                     }else if (description.length() == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
                     }else if (location.length() == 0) {
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
                     }else if (date.length() == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
                     }else if (time.length() == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
                     }else if (category == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
                     }else {
                         //we have a bitmap and no Uri
                         if (mSelectedBitmap != null && mSelectedUri == null) {
@@ -286,7 +285,7 @@ public class CreateEventActivity extends AppCompatActivity {
                         else if (mSelectedBitmap == null && mSelectedUri != null) {
                             uploadNewPhoto(mSelectedUri);
                         }else{
-                            Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -302,7 +301,7 @@ public class CreateEventActivity extends AppCompatActivity {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
         try {
-            startActivityForResult(builder.build(CreateEventActivity.this), PLACE_PICKER_REQUEST);
+            startActivityForResult(builder.build(EditEventActivity.this), PLACE_PICKER_REQUEST);
 
 
         } catch (GooglePlayServicesRepairableException e) {
@@ -378,9 +377,9 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void executeUploadTask() {
 
-        progressDialog = new ProgressDialog(CreateEventActivity.this);
-        progressDialog.setMessage("Creating..."); // Setting Message
-        progressDialog.setTitle("Create Event"); // Setting Title
+        progressDialog = new ProgressDialog(EditEventActivity.this);
+        progressDialog.setMessage("Editing..."); // Setting Message
+        progressDialog.setTitle("Edit Event"); // Setting Title
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Horizontal
         progressDialog.show(); // Display Progress Dialog
         Log.d(TAG, "onClick: attempting to post...");
@@ -398,7 +397,7 @@ public class CreateEventActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(CreateEventActivity.this, "Image Upload Successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditEventActivity.this, "Image Upload Successful", Toast.LENGTH_SHORT).show();
 
                 //insert the download url into the firebase database
                 Uri firebaseUri = taskSnapshot.getDownloadUrl();
@@ -417,21 +416,21 @@ public class CreateEventActivity extends AppCompatActivity {
                 double Longitude = eventLongitude;
 
 
-                CreateEvent createEvent = new CreateEvent();
+                CreateEvent editEvent = new CreateEvent();
 
-                createEvent.setEventName(EventName);
-                createEvent.setCategoryId(CategoryId);
-                createEvent.setMainImage(MainImage);
-                createEvent.setEventDate(EventDate);
-                createEvent.setUsername(Username);
-                createEvent.setDescription(Description);
-                createEvent.setLocationName(LocationName);
-                createEvent.setLatitude(Latitude);
-                createEvent.setLongitude(Longitude);
+                editEvent.setEventName(EventName);
+                editEvent.setCategoryId(CategoryId);
+                editEvent.setMainImage(MainImage);
+                editEvent.setEventDate(EventDate);
+                editEvent.setUsername(Username);
+                editEvent.setDescription(Description);
+                editEvent.setLocationName(LocationName);
+                editEvent.setLatitude(Latitude);
+                editEvent.setLongitude(Longitude);
 
                 for (int i = 0; i < 1; i++) {
 
-                    SendNetworkRequest(createEvent);
+                    SendNetworkRequest(editEvent);
                 }
 
 
@@ -440,7 +439,7 @@ public class CreateEventActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CreateEventActivity.this, "could not upload photo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditEventActivity.this, "could not upload photo", Toast.LENGTH_SHORT).show();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -462,9 +461,9 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-    private void SendNetworkRequest(CreateEvent createEvent) {
+    private void SendNetworkRequest(CreateEvent editEvent) {
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
-        Call<ResponseBody> call = client.creatingEvent(createEvent);
+        Call<ResponseBody> call = client.editingEvent(Username,event_id,editEvent);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -473,7 +472,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 progressDialog.dismiss();
 
                 if (response.code() == 200) {
-                    Toast.makeText(CreateEventActivity.this, "Event Created", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditEventActivity.this, "Event Edited", Toast.LENGTH_SHORT).show();
                     Intent MainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
                     MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -483,10 +482,10 @@ public class CreateEventActivity extends AppCompatActivity {
                     switch (response.code()) {
 
                         case 500:
-                            Toast.makeText(CreateEventActivity.this, "Event not created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditEventActivity.this, "Event not edited", Toast.LENGTH_SHORT).show();
 
                         default:
-                            Toast.makeText(CreateEventActivity.this, "Server returned error: Unknown error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditEventActivity.this, "Server returned error: Unknown error", Toast.LENGTH_SHORT).show();
 
 
                     }
@@ -499,7 +498,7 @@ public class CreateEventActivity extends AppCompatActivity {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 progressDialog.dismiss();
 
-                Toast.makeText(CreateEventActivity.this, "You have no connection to server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditEventActivity.this, "You have no connection to server", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -510,14 +509,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public Boolean isServicesOK() {
         Log.d(TAG, "isServicesOK(): checking google services version");
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(CreateEventActivity.this);
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(EditEventActivity.this);
 
         if (available == ConnectionResult.SUCCESS) {
             Log.d(TAG, "Google Play Services is working");
             return true;
         } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             Log.d(TAG, "isServicesOK: an error occurred but we can fix it");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(CreateEventActivity.this, available, ERROR_DIALOG_REQUEST);
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(EditEventActivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
         } else {
             Toast.makeText(this, "We cant connect map request", Toast.LENGTH_SHORT).show();
@@ -571,26 +570,45 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
-    public void reset(){
-        eventFlyer.setImageResource(R.mipmap.ic_blank);
-        eventName.setHint("Event Name");
-        eventDescription.setHint("Event Description");
-        eventDate.setHint("Enter Date");
-        eventTime.setHint("Enter Time");
-        eventLocation.setHint("Select Location");
-        spinner = this.findViewById(R.id.events_category_spinner);
+    public void GetEvent() {
+        EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
+        Call<List<EventDetail>> call = client.gettingEvent(event_id);
+        call.enqueue(new Callback<List<EventDetail>>() {
+            @Override
+            public void onResponse(Call<List<EventDetail>> call, Response<List<EventDetail>> response) {
+                if (response.isSuccessful()) {
+
+                    List<EventDetail> body = response.body();
+
+                    Picasso mPicasso = Picasso.with(EditEventActivity.this);
+
+                    assert body != null;
+                    eventName.setText(body.get(0).getEventName());
+                    mPicasso.load(body.get(0).getMainImage()).into(eventFlyer);
+                    eventDescription.setText(body.get(0).getDescription());
+                    eventLocation.setText(body.get(0).getLocationName());
+                    eventTime.setText(body.get(0).getEventDate().substring(11, 16));
+                    eventDate.setText(body.get(0).getEventDate().substring(0, 10));
+
+                    eventLongitude = body.get(0).getLongitude();
+                    eventLatitude = body.get(0).getLatitude();
+
+                    String title = body.get(0).getEventName();
+                    setTitle("Edit " + title);
+
+
+                } else {
+                    Toast.makeText(EditEventActivity.this, "coudnt retrive event", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<EventDetail>> call, Throwable t) {
+                Toast.makeText(EditEventActivity.this, "could not connect to server", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
     }
-
-   /* public class UsernameReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-
-        }
-    }*/
-
-
 
 }
