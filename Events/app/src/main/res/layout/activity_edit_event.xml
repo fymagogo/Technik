@@ -196,7 +196,7 @@
                     android:layout_marginTop="16dp"
                     android:background="@drawable/button_background"
                     android:elevation="6dp"
-                    android:text="Create Event"
+                    android:text="Edit Event"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorWhite"
                     android:clickable="true" />

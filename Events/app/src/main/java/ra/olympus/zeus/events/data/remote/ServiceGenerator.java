@@ -84,7 +84,8 @@ public class ServiceGenerator {
 
 
      static Retrofit.Builder builder = new Retrofit.Builder()
-            .baseUrl("http://192.168.43.188:8000/")
+//            .baseUrl("http://192.168.43.188:8000/")
+             .baseUrl("http://eventhubbackend.azurewebsites.net/")
             .addConverterFactory(GsonConverterFactory.create());
 
 

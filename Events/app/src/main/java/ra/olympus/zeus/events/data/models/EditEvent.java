@@ -3,7 +3,7 @@ package ra.olympus.zeus.events.data.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CreateEvent {
+public class EditEvent {
 
     @SerializedName("EventName")
     @Expose
@@ -33,11 +33,11 @@ public class CreateEvent {
     @Expose
     private double Longitude;
 
-    public CreateEvent() {
+    public EditEvent() {
 
     }
 
-    public CreateEvent(String eventName, long categoryId, String mainImage, String eventDate, String username, String description, String locationName, double latitude, double longitude) {
+    public EditEvent(String eventName, long categoryId, String mainImage, String eventDate, String username, String description, String locationName, double latitude, double longitude) {
         EventName = eventName;
         CategoryId = categoryId;
         MainImage = mainImage;
@@ -52,7 +52,6 @@ public class CreateEvent {
     public String getEventName() {
         return EventName;
     }
-
 
     public void setEventName(String eventName) {
         EventName = eventName;
@@ -120,5 +119,20 @@ public class CreateEvent {
 
     public void setLongitude(double longitude) {
         Longitude = longitude;
+    }
+
+    @Override
+    public String toString() {
+        return "EditEvent{" +
+                "EventName:'" + EventName + '\'' +
+                ", CategoryId:" + CategoryId +
+                ", MainImage:'" + MainImage + '\'' +
+                ", EventDate:'" + EventDate + '\'' +
+                ", Username:'" + Username + '\'' +
+                ", Description;'" + Description + '\'' +
+                ", LocationName:'" + LocationName + '\'' +
+                ", Latitude:" + Latitude +
+                ", Longitude:" + Longitude +
+                '}';
     }
 }

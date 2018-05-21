@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 import okhttp3.ResponseBody;
@@ -50,6 +51,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private FloatingActionButton like_fab;
     Boolean like=false;
     Boolean attending=false;
+    Boolean match = false;
     private FloatingActionButton attend_fab;
     private FloatingActionButton location_fab;
     int position_id;
@@ -69,6 +71,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private int event_id;
     SharedPreferences sharedPref;
     String liker;
+    String eventCreator;
 
 
 
@@ -118,9 +121,12 @@ public class EventDetailActivity extends AppCompatActivity {
 
          SendNetworkRequest();
 
+
         like = sharedPref.getBoolean(Like,false);
-        if (like) {
-            like_fab.setImageResource(R.drawable.ic_favorite_accent);
+        if (Username.equals(sharedPref.getString("Username",Username))) {
+            if (like) {
+                like_fab.setImageResource(R.drawable.ic_favorite_accent);
+            }
         }
 
         attending = sharedPref.getBoolean(Attend,false);
@@ -131,12 +137,25 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu_2, menu);
+
+
+
+        @Override
+        public boolean onCreateOptionsMenu (final Menu menu){
+            new android.os.Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    MenuInflater inflater = getMenuInflater();
+                    inflater.inflate(R.menu.main_menu_2, menu);
+
+                }
+            },5000);
+
         return true;
-    }
+        }
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -157,11 +176,6 @@ public class EventDetailActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                SharedPreferences sharedPref;
-                                sharedPref = getSharedPreferences("EVENTHUB_SHAREDPREF_SIGNIN", Context.MODE_PRIVATE);
-
-                                sharedPref.edit().clear().apply();
-
                                 Delete();
                             }
                         })
@@ -175,17 +189,21 @@ public class EventDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     public void attend(View view){
 
 
 
         SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(User, Username);
 
         if(!attending) {
 
             attend_fab.setImageResource(R.mipmap.ic_check);
             attending = true;
             editor.putBoolean(Attend,true);
+            editor.putInt("Event-id",event_id);
             editor.apply();
 
             Update attend = new Update();
@@ -200,6 +218,7 @@ public class EventDetailActivity extends AppCompatActivity {
             attend_fab.setImageResource(R.mipmap.ic_checkwhite);
             attending = false;
             editor.putBoolean(Attend,false);
+            editor.putInt("Event-id",event_id);
             editor.apply();
 
             Update unattend = new Update();
@@ -214,6 +233,7 @@ public class EventDetailActivity extends AppCompatActivity {
     public void likeClick(View view){
 
         SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(User, Username);
 
 
 
@@ -221,9 +241,8 @@ public class EventDetailActivity extends AppCompatActivity {
 
             like_fab.setImageResource(R.drawable.ic_favorite_accent);
             like = true;
-            /*detailInterested.setText(likes + 1);*/
             editor.putBoolean(Like,true);
-            editor.putString(User, Username);
+            editor.putInt("Event-id",event_id);
             editor.apply();
 
             Update like = new Update();
@@ -231,11 +250,11 @@ public class EventDetailActivity extends AppCompatActivity {
 
             like.setUsername(Username);
             SendLike(like);
-            /*detailInterested.setText(liker + 1);*/
         }else{
             like_fab.setImageResource(R.drawable.ic_favorite_fill);
             like = false;
             editor.putBoolean(Like,false);
+            editor.putInt("Event-id",event_id);
             editor.apply();
 
             Update unlike = new Update();
@@ -243,14 +262,7 @@ public class EventDetailActivity extends AppCompatActivity {
             unlike.setUsername(Username);
             SendUnlike(unlike);
 
-            /*detailInterested.setText(likes - 1);*/
         }
-    }
-
-    public void editor(View view){
-        Intent intent = new Intent(EventDetailActivity.this,EventDetailActivity.class);
-        intent.putExtra("EventId",event_id);
-        startActivity(intent);
     }
 
     public void locator(View view){
@@ -270,7 +282,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 
-    int id = position_id;
+
 
 
 
@@ -305,6 +317,14 @@ public class EventDetailActivity extends AppCompatActivity {
                     lng = body.get(0).getLongitude();
                     lat = body.get(0).getLatitude();
                     setTitle(title);
+                    eventCreator = String.valueOf(body.get(0).getUsername());
+
+
+                    Log.d("Username", Username);
+                    Log.d("EventCreator",eventCreator);
+
+
+
 
 
                 }else{
@@ -543,6 +563,33 @@ public class EventDetailActivity extends AppCompatActivity {
         });
 
 
+    }
+    public boolean onPrepareOptionsMenu(final Menu menu)
+    {
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MenuItem edit = menu.findItem(R.id.edit_event);
+                MenuItem delete = menu.findItem(R.id.delete_event);
+                if(!Objects.equals(Username,eventCreator))
+                {
+                    edit.setVisible(true);
+                    edit.setEnabled(true);
+                    delete.setVisible(true);
+                    delete.setEnabled(true);
+                }
+                else
+                {
+                    edit.setVisible(false);
+                    edit.setEnabled(false);
+                    delete.setVisible(false);
+                    delete.setEnabled(false);
+                }
+            }
+        },5000);
+
+
+        return true;
     }
 
 }

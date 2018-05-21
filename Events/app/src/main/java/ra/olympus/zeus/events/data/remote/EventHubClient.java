@@ -7,6 +7,7 @@ import ra.olympus.zeus.events.UserDetails;
 import ra.olympus.zeus.events.UserSignIn;
 import ra.olympus.zeus.events.data.models.ChangePassword;
 import ra.olympus.zeus.events.data.models.CreateEvent;
+import ra.olympus.zeus.events.data.models.EditEvent;
 import ra.olympus.zeus.events.data.models.EventDetail;
 import ra.olympus.zeus.events.data.models.Update;
 import ra.olympus.zeus.events.data.models.UserProfileDetails;
@@ -53,13 +54,13 @@ public interface EventHubClient {
     Call<ResponseBody> changepassword (@Path("username") String username, @Body ChangePassword change);
 
     @GET("get-user-details/{username}")
-    Call<UserDetails> getUserDetails (@Path("username") String username);
+    Call<List<UserDetails>> getUserDetails (@Path("username") String username);
 
     @PUT("settings/edit-profile/{username}")
     Call<ResponseBody> sendProfileDetails (@Path("username") String username, @Body UserProfileDetails userprofile);
 
     @PUT("my-event/{username}/{eventid}/edit")
-    Call<ResponseBody> editingEvent (@Path("username") String username,@Path("eventid") int id,@Body CreateEvent editEvent );
+    Call<ResponseBody> editingEvent (@Path("username") String username,@Path("eventid") int id,@Body EditEvent editEvent );
 
     @DELETE("my-events/{username}/{event-id}/delete")
     Call<ResponseBody> deleteEvent (@Path("username") String username, @Path("event-id") int id);

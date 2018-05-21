@@ -3,9 +3,11 @@ package ra.olympus.zeus.events.Settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +15,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import ra.olympus.zeus.events.R;
 import ra.olympus.zeus.events.UserDetails;
@@ -57,7 +69,10 @@ public class ChangeUsernameActivity extends AppCompatActivity {
         currentNumber = findViewById(R.id.current_number);
         submit_edit_profile = findViewById(R.id.submit_edit_profile);
 
-        SendNetworkRequest();
+        //currentFirst_name.setText("This is stupid");
+
+       SendNetworkRequest();
+        //   newFunction();
 
 
 
@@ -73,7 +88,20 @@ public class ChangeUsernameActivity extends AppCompatActivity {
                 userprofile.setPhoneNumber(currentNumber.getText().toString());
                 //Place username authentication here
 
-                SendDetails(userprofile);
+                /*SendDetails(userprofile);*/
+
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("FirstName",currentFirst_name.getText().toString());
+                    jsonObject.put("LastName",currentLast_name.getText().toString());
+                    jsonObject.put("UserName",currentUsername.getText().toString());
+                    jsonObject.put("Email",currentEmail.getText().toString());
+                    jsonObject.put("PhoneNumber",currentNumber.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                newFunction(jsonObject);
             }
 
 
@@ -97,22 +125,23 @@ public class ChangeUsernameActivity extends AppCompatActivity {
 
     public void SendNetworkRequest(){
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
-        Call<UserDetails> call = client.getUserDetails(Username);
-        call.enqueue(new Callback<UserDetails>() {
+        Call<List<UserDetails>> call = client.getUserDetails(Username);
+        call.enqueue(new Callback<List<UserDetails>>() {
             @Override
-            public void onResponse(Call<UserDetails> call, Response<UserDetails> response) {
+            public void onResponse(Call<List<UserDetails>> call, Response<List<UserDetails>> response) {
                 if (response.isSuccessful()){
 
-                    UserDetails body = response.body();
+                    List<UserDetails> body = response.body();
 
 
                     assert body != null;
+                   // Toast.makeText(ChangeUsernameActivity.this, String.valueOf(body.get(0).getFirstName().toString()),Toast.LENGTH_SHORT).show();
 
                     currentFirst_name.setText("fishes", TextView.BufferType.EDITABLE);
-                    currentLast_name.setText(body.getLastName(),TextView.BufferType.EDITABLE);
-                    currentUsername.setText(body.getUserName(),TextView.BufferType.EDITABLE);
-                    currentEmail.setText(body.getEmail(),TextView.BufferType.EDITABLE);
-                    currentNumber.setText(body.getPhoneNumber(),TextView.BufferType.EDITABLE);
+//                    currentLast_name.setText(body.get(0).getLastName().toString(),TextView.BufferType.EDITABLE);
+                    currentUsername.setText(body.get(0).getUserName(),TextView.BufferType.EDITABLE);
+                    currentEmail.setText(body.get(0).getEmail(),TextView.BufferType.EDITABLE);
+                    currentNumber.setText(body.get(0).getPhoneNumber(),TextView.BufferType.EDITABLE);
 
 
                 }else{
@@ -121,8 +150,11 @@ public class ChangeUsernameActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<UserDetails> call, Throwable t) {
+            public void onFailure(Call<List<UserDetails>> call, Throwable t) {
                 Toast.makeText(ChangeUsernameActivity.this, "could not connect to server", Toast.LENGTH_SHORT).show();
+                Log.e(
+                        "TAG", String.valueOf(t.getMessage())
+                );
 
             }
         });
@@ -144,6 +176,7 @@ public class ChangeUsernameActivity extends AppCompatActivity {
                     sharedPref.edit().putString("Username",userprofile.getUserName());
                     sharedPref.edit().apply();
 
+                    Toast.makeText(ChangeUsernameActivity.this,"Success", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -155,6 +188,39 @@ public class ChangeUsernameActivity extends AppCompatActivity {
 
                 Toast.makeText(ChangeUsernameActivity.this,"You have no connection", Toast.LENGTH_SHORT).show();
 
+            }
+        });
+
+    }
+
+    public void newFunction(JSONObject jsonObject){
+        OkHttpClient client = new OkHttpClient();
+        Log.d("JsonObject", String.valueOf(jsonObject));
+
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, String.valueOf(jsonObject));
+        Request request = new Request.Builder()
+                .url("http://eventhubbackend.azurewebsites.net/settings/edit-profile/"+Username+"")
+                .put(body)
+                .addHeader("content-type", "application/json")
+                .addHeader("cache-control", "no-cache")
+                .addHeader("postman-token", "61fd661e-be6e-5a15-2f97-b6049934edf0")
+                .build();
+
+        client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, IOException e) {
+
+                Log.d("Edit","failed");
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+
+
+                Looper.prepare();
+                Toast.makeText(ChangeUsernameActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                Log.d("Edit","Successfully");
             }
         });
 

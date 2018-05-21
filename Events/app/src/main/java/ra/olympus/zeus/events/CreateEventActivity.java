@@ -265,18 +265,13 @@ public class CreateEventActivity extends AppCompatActivity {
                 long category = spinner.getSelectedItemId();
 
 
-                    if (name.length() == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else if (description.length() == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else if (location.length() == 0) {
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else if (date.length() == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else if (time.length() == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                    if (name.isEmpty()){eventName.setError("Enter Name");
+                    }else if (description.isEmpty()){eventDescription.setError("Enter Description");
+                    }else if (location.isEmpty()) {eventLocation.setError("Select Location");
+                    }else if (date.isEmpty()){eventDate.setError("Enter Date");
+                    }else if (time.isEmpty()){eventTime.setError("Enter Time");
                     }else if (category == 0){
-                        Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateEventActivity.this,"Select a Category",Toast.LENGTH_SHORT).show();
                     }else {
                         //we have a bitmap and no Uri
                         if (mSelectedBitmap != null && mSelectedUri == null) {
@@ -286,7 +281,7 @@ public class CreateEventActivity extends AppCompatActivity {
                         else if (mSelectedBitmap == null && mSelectedUri != null) {
                             uploadNewPhoto(mSelectedUri);
                         }else{
-                            Toast.makeText(CreateEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreateEventActivity.this,"Upload a photo",Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -378,11 +373,11 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void executeUploadTask() {
 
-        progressDialog = new ProgressDialog(CreateEventActivity.this);
+        /*progressDialog = new ProgressDialog(CreateEventActivity.this);
         progressDialog.setMessage("Creating..."); // Setting Message
         progressDialog.setTitle("Create Event"); // Setting Title
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Horizontal
-        progressDialog.show(); // Display Progress Dialog
+        progressDialog.show(); // Display Progress Dialog*/
         Log.d(TAG, "onClick: attempting to post...");
 
 
@@ -476,6 +471,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     Toast.makeText(CreateEventActivity.this, "Event Created", Toast.LENGTH_SHORT).show();
                     Intent MainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
                     MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(MainActivityIntent);
 
 
                 } else {

@@ -28,11 +28,13 @@
             android:targetClass="ra.olympus.zeus.events.Settings.ChangePasswordActivity"/>
     </Preference>
 
-    <Preference
-        android:title="@string/Logout"
-        android:dialogTitle="Delete Account "
-        android:dialogMessage="Are you sure you want to delete your account?">
-    </Preference>
+        <Preference
+            android:title="Delete Account">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="ra.olympus.zeus.events"
+                android:targetClass="ra.olympus.zeus.events.Settings.delete"/>
+        </Preference>
 
 
     </PreferenceCategory>

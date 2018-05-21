@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -50,13 +51,21 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import ra.olympus.zeus.events.data.models.CreateEvent;
+import ra.olympus.zeus.events.data.models.EditEvent;
 import ra.olympus.zeus.events.data.models.EventDetail;
 import ra.olympus.zeus.events.data.remote.EventHubClient;
 import ra.olympus.zeus.events.data.remote.ServiceGenerator;
@@ -94,6 +103,7 @@ public class EditEventActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private String Username;
     private int event_id;
+    private String initialImage;
 
 
 
@@ -195,7 +205,7 @@ public class EditEventActivity extends AppCompatActivity {
         };
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplication(), R.array.category_types, R.layout.spinner_text_view);
-        final Spinner spinner = this.findViewById(R.id.events_category_spinner);
+
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -264,19 +274,14 @@ public class EditEventActivity extends AppCompatActivity {
                 long category = spinner.getSelectedItemId();
 
 
-                    if (name.length() == 0){
-                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else if (description.length() == 0){
-                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else if (location.length() == 0) {
-                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else if (date.length() == 0){
-                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else if (time.length() == 0){
-                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else if (category == 0){
-                        Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
-                    }else {
+                if (name.isEmpty()){eventName.setError("Enter Name");
+                }else if (description.isEmpty()){eventDescription.setError("Enter Description");
+                }else if (location.isEmpty()) {eventLocation.setError("Select Location");
+                }else if (date.isEmpty()){eventDate.setError("Enter Date");
+                }else if (time.isEmpty()){eventTime.setError("Enter Time");
+                }else if (category == 0){
+                    Toast.makeText(EditEventActivity.this,"Select a Category",Toast.LENGTH_SHORT).show();
+                }else {
                         //we have a bitmap and no Uri
                         if (mSelectedBitmap != null && mSelectedUri == null) {
                             uploadNewPhoto(mSelectedBitmap);
@@ -285,7 +290,7 @@ public class EditEventActivity extends AppCompatActivity {
                         else if (mSelectedBitmap == null && mSelectedUri != null) {
                             uploadNewPhoto(mSelectedUri);
                         }else{
-                            Toast.makeText(EditEventActivity.this,"Fill all fields",Toast.LENGTH_SHORT).show();
+                            AlternateRoute();
                         }
                     }
 
@@ -416,21 +421,39 @@ public class EditEventActivity extends AppCompatActivity {
                 double Longitude = eventLongitude;
 
 
-                CreateEvent editEvent = new CreateEvent();
+                /*EditEvent editEvent = new EditEvent();
 
                 editEvent.setEventName(EventName);
                 editEvent.setCategoryId(CategoryId);
                 editEvent.setMainImage(MainImage);
                 editEvent.setEventDate(EventDate);
-                editEvent.setUsername(Username);
                 editEvent.setDescription(Description);
                 editEvent.setLocationName(LocationName);
                 editEvent.setLatitude(Latitude);
-                editEvent.setLongitude(Longitude);
+                editEvent.setLongitude(Longitude);*/
+
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("EventName",EventName);
+                    jsonObject.put("CategoryId",CategoryId);
+                    jsonObject.put("MainImage",MainImage);
+                    jsonObject.put("EventDate",EventDate);
+                    jsonObject.put("Username",Username);
+                    jsonObject.put("Description",Description);
+                    jsonObject.put("LocationName",LocationName);
+                    jsonObject.put("Latitude",Latitude);
+                    jsonObject.put("Longitude",Longitude);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
 
                 for (int i = 0; i < 1; i++) {
 
-                    SendNetworkRequest(editEvent);
+                    /*SendNetworkRequest(editEvent);*/
+
+                    newFunction(jsonObject);
                 }
 
 
@@ -461,7 +484,7 @@ public class EditEventActivity extends AppCompatActivity {
     }
 
 
-    private void SendNetworkRequest(CreateEvent editEvent) {
+    private void SendNetworkRequest(EditEvent editEvent) {
         EventHubClient client = ServiceGenerator.createService(EventHubClient.class);
         Call<ResponseBody> call = client.editingEvent(Username,event_id,editEvent);
 
@@ -595,6 +618,7 @@ public class EditEventActivity extends AppCompatActivity {
 
                     String title = body.get(0).getEventName();
                     setTitle("Edit " + title);
+                    initialImage = body.get(0).getMainImage();
 
 
                 } else {
@@ -608,6 +632,88 @@ public class EditEventActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public void AlternateRoute(){
+        String EventName = eventName.getText().toString().trim();
+        long CategoryId = spinner.getSelectedItemId();
+        String MainImage = initialImage.trim();
+        String EventDate = eventDate.getText().toString().trim() + " " + eventTime.getText().toString().trim();
+        String Description = eventDescription.getText().toString().trim();
+        String LocationName = eventLocation.getText().toString().trim();
+        double Latitude = eventLatitude;
+        double Longitude = eventLongitude;
+
+
+
+        /*EditEvent editEvent = new EditEvent();
+
+        editEvent.setEventName(EventName);
+        editEvent.setCategoryId(CategoryId);
+        editEvent.setMainImage(MainImage);
+        editEvent.setEventDate(EventDate);
+        editEvent.setDescription(Description);
+        editEvent.setLocationName(LocationName);
+        editEvent.setLatitude(Latitude);
+        editEvent.setLongitude(Longitude);*/
+
+        for (int i = 0; i < 1; i++) {
+            progressDialog = new ProgressDialog(EditEventActivity.this);
+            progressDialog.setMessage("Editing..."); // Setting Message
+            progressDialog.setTitle("Edit Event"); // Setting Title
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Horizontal
+            progressDialog.show(); // Display Progress Dialog
+
+           /* SendNetworkRequest(editEvent);*/
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("EventName",EventName);
+                jsonObject.put("CategoryId",CategoryId);
+                jsonObject.put("MainImage",MainImage);
+                jsonObject.put("EventDate",EventDate);
+                jsonObject.put("Username",Username);
+                jsonObject.put("Description",Description);
+                jsonObject.put("LocationName",LocationName);
+                jsonObject.put("Latitude",Latitude);
+                jsonObject.put("Longitude",Longitude);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            newFunction(jsonObject);
+        }
+
+    }
+
+    public void newFunction(JSONObject jsonObject){
+        OkHttpClient client = new OkHttpClient();
+        Log.d("JsonObject", String.valueOf(jsonObject));
+
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, String.valueOf(jsonObject));
+        Request request = new Request.Builder()
+                .url("http://eventhubbackend.azurewebsites.net/my-events/"+Username+"/"+event_id+"/edit")
+                .put(body)
+                .addHeader("content-type", "application/json")
+                .addHeader("cache-control", "no-cache")
+                .addHeader("postman-token", "61fd661e-be6e-5a15-2f97-b6049934edf0")
+                .build();
+
+       client.newCall(request).enqueue(new okhttp3.Callback() {
+           @Override
+           public void onFailure(okhttp3.Call call, IOException e) {
+               progressDialog.dismiss();
+           }
+
+           @Override
+           public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+
+               progressDialog.dismiss();
+               Looper.prepare();
+               Toast.makeText(EditEventActivity.this,"Success",Toast.LENGTH_SHORT).show();
+           }
+       });
 
     }
 
